@@ -10,6 +10,13 @@ class AuthService
     public function __construct(protected UserRepositoryInterface $userRepository) {
         
     }
+    /**
+     * Verify user email
+     * 
+     * @param App\Models\User $user
+     * 
+     * @return string $token
+     */
     public function verifyUser($user)
     {
         $user = $this->userRepository->update($user->id,[

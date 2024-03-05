@@ -23,8 +23,10 @@ Route::group([
 ], function ($router) {
     Route::post('register',[AuthController::class,'register']);
     Route::post('login', [AuthController::class,'login']);
+    Route::post('forget_password',[AuthController::class,'forgetPassword']);
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', [AuthController::class,'me']);
+    Route::post('reset_password',[AuthController::class,'resetPassword']);
     Route::get('verify',[AuthController::class,'verify']);
 });

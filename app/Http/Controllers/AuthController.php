@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\ForgetPasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\AuthService;
@@ -25,7 +27,7 @@ class AuthController extends Controller
         protected AuthService $authService
     )
     {
-        $this->middleware('auth:api', ['except' => ['login','register']]);
+        $this->middleware('auth:api', ['except' => ['login','register','forgetPassword']]);
     }
 
     /**
@@ -93,7 +95,11 @@ class AuthController extends Controller
     {
         return $this->respondWithToken(JWTAuth::refresh());
     }
-
+    /**
+     * Verify user email
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function verify()
     {
         $user = JWTAuth::parseToken()->authenticate();
@@ -101,6 +107,49 @@ class AuthController extends Controller
         {
             $token = $this->authService->verifyUser($user);
             return $this->respondWithToken($token);
+        }else{
+            return response()->json([
+                'message' => 'Invalid Token'
+            ],401);
+        }
+    }
+
+    /**
+     * Request to send reset password email
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function forgetPassword(ForgetPasswordRequest $request)
+    {
+        $validated = $request->validated();
+        $user = $this->userService->getUserByEmail($validated['email']);
+        if($user){
+            $this->emailVerifyService->sendResetPasswordEmail($user);
+            return response()->json([
+                "message" => 'Reset Password email sent successfully',
+            ]);
+        }else{
+            return response()->json([
+                'message' => 'Invalid email'
+            ],400);
+        }
+    }
+
+    /**
+     * Reset password
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function resetPassword(ResetPasswordRequest $request)
+    {   
+        $user = auth()->user();
+        $validated = $request->validated();
+        $user = $this->userService->updateUser($user->id,$validated);
+        auth()->logout(true);
+        if($user){
+            return response()->json([
+                'message' => 'Reset password successfully',
+            ],200);
         }else{
             return response()->json([
                 'message' => 'Invalid Token'
