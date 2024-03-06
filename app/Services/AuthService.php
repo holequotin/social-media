@@ -26,4 +26,34 @@ class AuthService
         $token = auth()->login($user);
         return $token;
     }
+
+    public function checkValidToken($token)
+    {
+        $old_token = JWTAuth::getToken();
+        JWTAuth::setToken($token);
+        $check = JWTAuth::check();
+        JWTAuth::setToken($old_token);
+        return $check;
+    }
+
+    public function generateRefreshToken($user)
+    {
+        $refresh_ttl = (int)config('jwt.refresh_ttl');
+        $refresh_token = JWTAuth::customClaims(['exp' => Carbon::now()->addMinutes($refresh_ttl)->timestamp])
+        ->fromUser($user);
+        return $refresh_token;
+    }
+
+    public function refreshToken($refresh_token)
+    {
+        $user = auth()->user();
+        if(!is_null($user)){
+            $token = JWTAuth::refresh();
+            JWTAuth::invalidate();
+            return $token;
+        }
+        $decoded = JWTAuth::getJWTProvider()->decode($refresh_token);
+        $user = $this->userRepository->find($decoded['sub']);
+        return JWTAuth::fromUser($user);
+    }
 }

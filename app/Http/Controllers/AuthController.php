@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Auth\ForgetPasswordRequest;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RefreshTokenRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Resources\UserResource;
@@ -12,7 +13,9 @@ use App\Services\AuthService;
 use App\Services\EmailVerifyService;
 use App\Services\UserService;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\JWT;
 
 class AuthController extends Controller
 {
@@ -27,7 +30,7 @@ class AuthController extends Controller
         protected AuthService $authService
     )
     {
-        $this->middleware('auth:api', ['except' => ['login','register','forgetPassword']]);
+        $this->middleware('auth:api', ['except' => ['login','register','forgetPassword','refresh']]);
     }
 
     /**
@@ -61,7 +64,10 @@ class AuthController extends Controller
                 "message" => 'Verification email sent successfully',
             ],200);
         }
-        return $this->respondWithToken($token);
+
+        $refreshToken = $this->authService->generateRefreshToken($user);
+        //$refreshToken = "a";
+        return $this->respondWithToken($token,$refreshToken);
     }
 
     /**
@@ -79,10 +85,9 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout()
+    public function logout(Request $request)
     {
         auth()->logout();
-
         return response()->json(['message' => 'Successfully logged out']);
     }
 
@@ -91,9 +96,16 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh()
+    public function refresh(RefreshTokenRequest $request)
     {
-        return $this->respondWithToken(JWTAuth::refresh());
+        $validated = $request->validated();
+        if($this->authService->checkValidToken($validated['refresh_token'])){
+            $token = $this->authService->refreshToken($validated['refresh_token']);
+            return $this->respondWithToken($token,$validated['refresh_token']);
+        }
+        return response()->json([
+            "message" => "Invalid refresh token"
+        ],403);
     }
     /**
      * Verify user email
@@ -106,7 +118,8 @@ class AuthController extends Controller
         if($user)
         {
             $token = $this->authService->verifyUser($user);
-            return $this->respondWithToken($token);
+            $refreshToken = JWTAuth::fromUser($user);
+            return $this->respondWithToken($token,$refreshToken);
         }else{
             return response()->json([
                 'message' => 'Invalid Token'
@@ -164,10 +177,11 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken($token,$refreshToken)
     {
         return response()->json([
             'access_token' => $token,
+            'refresh_token' => $refreshToken,
             'token_type' => 'bearer',
             'expires_in' => JWTAuth::factory()->getTTL() * 60
         ]);

@@ -26,5 +26,9 @@ class UserService
     {
         return $this->userRepository->getUserByEmail($email);
     }
-
+    
+    public function getUserById($id)
+    {
+        return $this->userRepository->find($id);
+    }
 }
