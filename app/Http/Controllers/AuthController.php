@@ -12,8 +12,8 @@ use App\Models\User;
 use App\Services\AuthService;
 use App\Services\EmailVerifyService;
 use App\Services\UserService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\JWT;
 
@@ -28,9 +28,8 @@ class AuthController extends Controller
         protected EmailVerifyService $emailVerifyService,
         protected UserService $userService,
         protected AuthService $authService
-    )
-    {
-        $this->middleware('auth:api', ['except' => ['login','register','forgetPassword','refresh']]);
+    ) {
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'forgetPassword', 'refresh']]);
     }
 
     /**
@@ -38,7 +37,8 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(RegisterRequest $request) {
+    public function register(RegisterRequest $request)
+    {
         $validated = $request->validated();
         $user = $this->userService->createUser($validated);
         $this->emailVerifyService->sendVerifyEmail($user);
@@ -56,18 +56,16 @@ class AuthController extends Controller
         if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-        $user = auth() -> user();
-        if(!$user->email_verified_at){
+        $user = auth()->user();
+        if (!$user->email_verified_at) {
             auth()->logout();
             $this->emailVerifyService->sendVerifyEmail($user);
             return response()->json([
                 "message" => 'Verification email sent successfully',
-            ],200);
+            ], Response::HTTP_OK);
         }
-
         $refreshToken = $this->authService->generateRefreshToken($user);
-        //$refreshToken = "a";
-        return $this->respondWithToken($token,$refreshToken);
+        return $this->respondWithToken($token, $refreshToken);
     }
 
     /**
@@ -99,13 +97,13 @@ class AuthController extends Controller
     public function refresh(RefreshTokenRequest $request)
     {
         $validated = $request->validated();
-        if($this->authService->checkValidToken($validated['refresh_token'])){
+        if ($this->authService->checkValidToken($validated['refresh_token'])) {
             $token = $this->authService->refreshToken($validated['refresh_token']);
-            return $this->respondWithToken($token,$validated['refresh_token']);
+            return $this->respondWithToken($token, $validated['refresh_token']);
         }
         return response()->json([
             "message" => "Invalid refresh token"
-        ],403);
+        ], Response::HTTP_UNAUTHORIZED);
     }
     /**
      * Verify user email
@@ -115,15 +113,14 @@ class AuthController extends Controller
     public function verify()
     {
         $user = JWTAuth::parseToken()->authenticate();
-        if($user)
-        {
+        if ($user) {
             $token = $this->authService->verifyUser($user);
-            $refreshToken = JWTAuth::fromUser($user);
-            return $this->respondWithToken($token,$refreshToken);
-        }else{
+            $refreshToken = $this->authService->generateRefreshToken($user);
+            return $this->respondWithToken($token, $refreshToken);
+        } else {
             return response()->json([
                 'message' => 'Invalid Token'
-            ],401);
+            ], Response::HTTP_UNAUTHORIZED);
         }
     }
 
@@ -136,15 +133,15 @@ class AuthController extends Controller
     {
         $validated = $request->validated();
         $user = $this->userService->getUserByEmail($validated['email']);
-        if($user){
+        if ($user) {
             $this->emailVerifyService->sendResetPasswordEmail($user);
             return response()->json([
                 "message" => 'Reset Password email sent successfully',
             ]);
-        }else{
+        } else {
             return response()->json([
                 'message' => 'Invalid email'
-            ],400);
+            ], Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -154,19 +151,19 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function resetPassword(ResetPasswordRequest $request)
-    {   
+    {
         $user = auth()->user();
         $validated = $request->validated();
-        $user = $this->userService->updateUser($user->id,$validated);
+        $user = $this->userService->updateUser($user->id, $validated);
         auth()->logout(true);
-        if($user){
+        if ($user) {
             return response()->json([
                 'message' => 'Reset password successfully',
-            ],200);
-        }else{
+            ]);
+        } else {
             return response()->json([
                 'message' => 'Invalid Token'
-            ],401);
+            ], Response::HTTP_UNAUTHORIZED);
         }
     }
 
@@ -177,7 +174,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithToken($token,$refreshToken)
+    protected function respondWithToken($token, $refreshToken)
     {
         return response()->json([
             'access_token' => $token,
