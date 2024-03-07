@@ -42,8 +42,12 @@ class AuthController extends BaseApiController
         $user = $this->userService->createUser($validated);
         $this->emailVerifyService->sendVerifyEmail($user);
 
-        return new UserResource($user);
+        return $this->sendResponse([
+            "message" => __('mail.send.success', ['type' => 'Verify']),
+            "user" => UserResource::make($user)
+        ], Response::HTTP_CREATED);
     }
+
     /**
      * Get a JWT via given credentials.
      *
@@ -99,6 +103,7 @@ class AuthController extends BaseApiController
         $token = $this->authService->refreshToken($validated["refresh_token"]);
         return $this->respondWithToken($token, $validated["refresh_token"]);
     }
+    
     /**
      * Verify user email
      * 
@@ -145,7 +150,7 @@ class AuthController extends BaseApiController
         $user = $this->userService->updateUser($user->id, $validated);
         auth()->logout(true);
         if ($user) {
-            $this->sendResponse(["message" => "Reset password successfully",], __("auth.reset_password"));
+            return $this->sendResponse(["message" => "Reset password successfully",], __("auth.reset_password"));
         }
 
         return $this->sendError(["error" => __("auth.token.invalid")], Response::HTTP_UNAUTHORIZED);

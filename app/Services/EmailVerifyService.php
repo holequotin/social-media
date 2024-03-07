@@ -18,6 +18,7 @@ class EmailVerifyService
     {
         Notification::send($user,new EmailVerificationNotification($this->generateVerificationLink($user)));
     }
+
     /**
      * Send reset password email
      * @param App\Models\User $user
@@ -40,6 +41,7 @@ class EmailVerifyService
     public function generateVerificationLink($user)
     {
         $token = JWTAuth::fromUser($user);
+        
         return config('app.url').'/api/auth/verify'.'?token='.$token;
     }
 }

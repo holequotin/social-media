@@ -24,6 +24,7 @@ class AuthService
         ]);
         JWTAuth::invalidate(true);
         $token = auth()->login($user);
+        
         return $token;
     }
 
@@ -33,6 +34,7 @@ class AuthService
         JWTAuth::setToken($token);
         $check = JWTAuth::check();
         JWTAuth::setToken($old_token);
+
         return $check;
     }
 
@@ -41,6 +43,7 @@ class AuthService
         $refresh_ttl = (int)config('jwt.refresh_ttl');
         $refresh_token = JWTAuth::customClaims(['exp' => Carbon::now()->addMinutes($refresh_ttl)->timestamp])
         ->fromUser($user);
+
         return $refresh_token;
     }
 
@@ -54,6 +57,7 @@ class AuthService
         }
         $decoded = JWTAuth::getJWTProvider()->decode($refresh_token);
         $user = $this->userRepository->find($decoded['sub']);
+
         return JWTAuth::fromUser($user);
     }
 }

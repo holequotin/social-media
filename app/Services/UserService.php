@@ -1,15 +1,14 @@
 <?php
 namespace App\Services;
 
-use App\Models\User;
 use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
     public function __construct(protected UserRepositoryInterface $userRepository) {
-        
     }
+
     public function createUser($data)
     {
         $data['password'] = Hash::make($data['password']);
