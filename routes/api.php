@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,3 +35,5 @@ Route::group([
     Route::post('me', [AuthController::class,'me']);
     Route::post('reset_password',[AuthController::class,'resetPassword']);
 });
+
+Route::resource('posts',PostController::class)->middleware(['api','auth:api'])->except(['create','edit']);
