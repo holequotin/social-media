@@ -15,7 +15,7 @@ class FileService
     {
         $urls = [];
         foreach ($images as $image) {
-            $path = $image->store($directory);
+            $path = Storage::disk('local')->put('public/'.$directory,$image);
             $urls[] = config('app.url').Storage::url($path);
         }
         return $urls;

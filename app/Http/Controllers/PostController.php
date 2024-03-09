@@ -9,6 +9,7 @@ use App\Services\PostImageService;
 use App\Services\PostService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class PostController extends BaseApiController  
 {
@@ -37,14 +38,16 @@ class PostController extends BaseApiController
             $post = $this->postService->createPost($validated);
             $urls = $this->fileService->storeImage('posts',$validated['images']);
             $this->postImageService->createPostImages($urls,$post->id);
-
+            $post = $this->postService->getPostById($post->id);
+            
             return $this->sendResponse([
                 "message" => __('post.create.success'),
-                "post" => PostResource::make($post->with('images'))
+                "post" => PostResource::make($post)
             ], Response::HTTP_CREATED);
         } catch (\Throwable $th) {
-            //throw $th;
-            $this->sendError(['error' => $th->getMessage()]);
+            Log::error($th);
+
+            return $this->sendError(['error' => $th->getMessage()]);
         }
     }
 

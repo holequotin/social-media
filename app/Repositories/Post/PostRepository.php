@@ -11,4 +11,8 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         return Post::class;
     }
 
+    public function find($postId)
+    {
+        return $this->getModel()::with('images')->find($postId);
+    }
 }

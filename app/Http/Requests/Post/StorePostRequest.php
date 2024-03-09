@@ -22,9 +22,10 @@ class StorePostRequest extends FormRequest
      */
     public function rules(): array
     {
+        $this->mergeIfMissing(['images' => []]);
         return [
             'body' => ["required_without:images"],
-            'images' => ["required_without:body"],
+            'images' => ["required_without:body",'max:4'],
             'images.*' => ['image', 'max:2048'],
             'type' => ['string', 'required', 'in:' . implode(',', PostType::getValues())],
         ];

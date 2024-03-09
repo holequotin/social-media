@@ -13,4 +13,9 @@ class PostService
         $data['user_id'] = auth()->user()->id;
         return $this->postRepository->create($data);
     }
+
+    public function getPostById($postId)
+    {
+        return $this->postRepository->find($postId);
+    }
 }
