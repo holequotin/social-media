@@ -10,11 +10,11 @@ class PostImageService
     }
 
     public function createPostImages($urls, $postId)
-    {
-        $values = [];
-        foreach ($urls as $url) {
-            $values[] = ['url' => $url, 'post_id' => $postId];
-        }
-        return $this->postImageRepository->insert($values);
+    {   
+        $collection = collect($urls);
+        $values = $collection->map(function ($value, $key) use ($postId) {
+            return ['url' => $value,'post_id' => $postId];
+        });
+        return $this->postImageRepository->insert($values->all());
     }
 }
