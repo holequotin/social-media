@@ -6,4 +6,8 @@ use App\Repositories\RepositoryInterface;
 interface PostImageRepositoryInterface extends RepositoryInterface
 {
     public function insert($values = []);
+    public function getImageCountByPost($postId);
+    public function destroy($postImageId = []);
+    public function getUrlsById($postImageId = []);
+    public function checkValidPostImage($postId, $postImageId = []);
 }

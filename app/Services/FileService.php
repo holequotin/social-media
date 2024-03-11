@@ -20,4 +20,16 @@ class FileService
         }
         return $urls;
     }
+
+    /**
+     * Delete images
+     * 
+     * @param array $paths
+     *
+     * @return bool
+     */
+    public function deleteImage($paths = [])
+    {
+        return Storage::delete($paths);
+    }
 }

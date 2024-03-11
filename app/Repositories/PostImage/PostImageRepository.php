@@ -17,4 +17,28 @@ class PostImageRepository extends BaseRepository implements PostImageRepositoryI
     {
         return DB::table('post_images')->insert($values);
     }
+
+    public function getImageCountByPost($postId)
+    {
+        return $this->getModel()::where('post_id',$postId)->count();
+    }
+
+    public function destroy($postImageId = [])
+    {
+        return $this->getModel()::destroy($postImageId);
+    }
+
+    public function getUrlsById($postImageId = [])
+    {
+        return $this->getModel()::whereIn('id' , $postImageId)->pluck('url');
+    }
+
+    public function checkValidPostImage($postId, $postImageId = [])
+    {
+        $count = $this->getModel()::whereIn('id',$postImageId)
+                    ->where('post_id',$postId)
+                    ->count();
+
+        return $count == count($postImageId);
+    }
 }

@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Post\StorePostRequest;
+use App\Http\Requests\Post\UpdatePostRequest;
 use App\Http\Resources\PostResource;
+use App\Models\Post;
 use App\Services\FileService;
 use App\Services\PostImageService;
 use App\Services\PostService;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
@@ -62,9 +63,17 @@ class PostController extends BaseApiController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdatePostRequest $request, Post $post)
     {
         //
+        $this->authorize('update', $post);
+        $validated = $request->validated();
+        $this->postService->updatePost($post->id,$validated);
+        $post = $this->postService->getPostById($post->id);
+        return $this->sendResponse([
+            "message" => __('post.update.success'),
+            "post" => PostResource::make($post)
+        ], Response::HTTP_OK);
     }
 
     /**
