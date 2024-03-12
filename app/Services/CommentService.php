@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Helpers\ImageHelper;
@@ -17,23 +18,65 @@ class CommentService
     public function createComment($data)
     {
         $data['user_id'] = auth()->user()->id;
+        $data = $this->addUrl($data);
         return $this->commentRepository->create($data);
     }
 
     public function deleteComment(Comment $comment)
     {
-        $urls = collect([$comment->url]);
+
         try {
             DB::beginTransaction();
+            $this->deleteImageComment($comment);
             $this->commentRepository->delete($comment->id);
-            if($comment->url){
-                $paths = ImageHelper::urlsToPaths($urls);
-                $this->fileService->deleteImage($paths->all());
-            }
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
             throw $th;
         }
+    }
+
+    public function updateComment(Comment $comment, $data)
+    {
+        if ($data['delete_image']) {
+            $this->deleteImageComment($comment);
+            $data['url'] = null;
+        }
+        if (isset($data['image'])) {
+            $this->deleteImageComment($comment);
+            $data = $this->addUrl($data);
+        }
+
+        return $this->commentRepository->update($comment->id,$data);
+    }
+    /**
+     * Delete image of comment
+     * 
+     * @param $comment
+     * 
+     * @return void
+     */
+    public function deleteImageComment($comment)
+    {
+        $urls = collect([$comment->url]);
+        if ($comment->url) {
+            $paths = ImageHelper::urlsToPaths($urls);
+            $this->fileService->deleteImage($paths->all());
+        }
+    }
+    /**
+     * Add url to validated when validated have image
+     * 
+     * @param $validated
+     * 
+     * @return array
+     */
+    public function addUrl($validated)
+    {
+        if (isset($validated['image'])) {
+            $urls = $this->fileService->storeImage('comments', [$validated['image']]);
+            $validated['url'] = $urls[0];
+        }
+        return $validated;
     }
 }

@@ -6,5 +6,8 @@ return [
     ],
     'delete' => [
         'success' => 'Successfully deleted comment'
+    ],
+    'update' => [
+        'success' => 'Successfully updated comment'
     ]
 ];
