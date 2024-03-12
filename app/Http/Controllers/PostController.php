@@ -9,6 +9,7 @@ use App\Models\Post;
 use App\Services\FileService;
 use App\Services\PostImageService;
 use App\Services\PostService;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
@@ -24,9 +25,13 @@ class PostController extends BaseApiController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $perPage = $request->get('perPage');
+        $posts = $this->postService->getPosts($perPage);
+        return $this->sendResponse([
+            'posts' => PostResource::collection($posts)
+        ], Response::HTTP_OK);
     }
 
     /**

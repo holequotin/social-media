@@ -30,4 +30,9 @@ class PostService
         
         return $this->postRepository->update($postId,$validated);
     }
+
+    public function getPosts($perPage = 10)
+    {
+        return $this->postRepository->paginate($perPage);
+    }
 }

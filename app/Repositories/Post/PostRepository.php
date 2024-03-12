@@ -15,4 +15,9 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
     {
         return $this->getModel()::with('images')->find($postId);
     }
+
+    public function paginate($perPage = 10)
+    {
+        return $this->getModel()::with('images')->paginate($perPage);
+    }
 }

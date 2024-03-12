@@ -64,4 +64,9 @@ abstract class BaseRepository implements RepositoryInterface
 
         return false;
     }
+
+    public function paginate($perPage = 10)
+    {
+        return $this->getModel()::paginate($perPage);
+    }
 }
