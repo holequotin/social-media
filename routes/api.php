@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -37,3 +38,4 @@ Route::group([
 });
 
 Route::resource('posts',PostController::class)->middleware(['api','auth:api'])->except(['create','edit']);
+Route::resource('comments',CommentController::class)->middleware(['api','auth:api'])->except(['create','edit']);
