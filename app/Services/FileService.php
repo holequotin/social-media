@@ -1,6 +1,9 @@
 <?php
+
 namespace App\Services;
+
 use Illuminate\Support\Facades\Storage;
+
 class FileService
 {
     /**
@@ -15,8 +18,8 @@ class FileService
     {
         $urls = [];
         foreach ($images as $image) {
-            $path = Storage::disk('local')->put('public/'.$directory,$image);
-            $urls[] = config('app.url').Storage::url($path);
+            $path = Storage::disk('local')->put('public/' . $directory, $image);
+            $urls[] = config('app.url') . Storage::url($path);
         }
         return $urls;
     }

@@ -1,11 +1,15 @@
 <?php
 namespace App\Services;
 
+use App\Helpers\ImageHelper;
 use App\Repositories\PostImage\PostImageRepositoryInterface;
+use Illuminate\Support\Facades\DB;
 
 class PostImageService
 {
-    public function __construct(protected PostImageRepositoryInterface $postImageRepository, protected FileService $fileService) {
+    public function __construct(
+        protected PostImageRepositoryInterface $postImageRepository, 
+        protected FileService $fileService) {
     }
 
     public function createPostImages($urls, $postId)
@@ -19,14 +23,23 @@ class PostImageService
 
     public function deletePostImagesById($postImageId = [])
     {
-        $urls = $this->postImageRepository->getUrlsById($postImageId);
+        try {
+            DB::beginTransaction();
+            $urls = $this->postImageRepository->getUrlsById($postImageId);
+            $result = $this->postImageRepository->destroy($postImageId);
+            $paths = ImageHelper::urlsToPaths($urls);
+            $this->fileService->deleteImage($paths->all());
+            DB::commit();
+            return $result;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
 
-        $paths = $urls->map(function ($item, $key) {
-            $path = parse_url($item,PHP_URL_PATH);
-            return str_replace('storage','public',$path);
-        });
-        $this->fileService->deleteImage($paths->all());
-
-        return $this->postImageRepository->destroy($postImageId);
+    public function deletePostImagesByPost($postId)
+    {
+        $postImageId = $this->postImageRepository->getIdByPost($postId);  
+        return $this->deletePostImagesById($postImageId->all());
     }
 }

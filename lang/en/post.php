@@ -5,7 +5,10 @@ return [
         'success' => 'Successfully created new post'
     ],
     'update' => [
-        'success' => 'Successfully updated  post'
+        'success' => 'Successfully updated post'
+    ],
+    'delete' => [
+        'success' => 'Successfully deleted post'
     ],
     'images' => [
         'max' => 'Each post only has a maximum of :max images',

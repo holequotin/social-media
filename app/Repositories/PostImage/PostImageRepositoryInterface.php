@@ -10,4 +10,6 @@ interface PostImageRepositoryInterface extends RepositoryInterface
     public function destroy($postImageId = []);
     public function getUrlsById($postImageId = []);
     public function checkValidPostImage($postId, $postImageId = []);
+    public function deletePostImageByPost($postId);
+    public function getIdByPost($postId);
 }

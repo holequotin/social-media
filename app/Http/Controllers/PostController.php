@@ -60,9 +60,13 @@ class PostController extends BaseApiController
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
+    public function show(Post $post)
+    {   
+        $post = $this->postService->getPostById($post->id);
 
+        return $this->sendResponse([
+            'post' => PostResource::make($post)
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -72,20 +76,34 @@ class PostController extends BaseApiController
     {
         //
         $this->authorize('update', $post);
-        $validated = $request->validated();
-        $this->postService->updatePost($post->id,$validated);
-        $post = $this->postService->getPostById($post->id);
-        return $this->sendResponse([
-            "message" => __('post.update.success'),
-            "post" => PostResource::make($post)
-        ], Response::HTTP_OK);
+        try {
+            $validated = $request->validated();
+            $this->postService->updatePost($post->id,$validated);
+            $post = $this->postService->getPostById($post->id);
+            return $this->sendResponse([
+                "message" => __('post.update.success'),
+                "post" => PostResource::make($post)
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return $this->sendError(['error' => $th->getMessage()]);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Post $post)
     {
-        //
+        $this->authorize('delete', $post);
+        try {
+            $this->postService->deletePost($post);
+            return $this->sendResponse([
+                "message" => __('post.delete.success'),
+            ]);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return $this->sendError(['error' => $th->getMessage()]);
+        }
     }
 }
