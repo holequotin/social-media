@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PostType;
+use App\Models\Traits\HasManyComment;
 use App\Models\Traits\HasManyPost;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Post extends Model
 {
-    use HasFactory,HasManyPost;
+    use HasFactory, HasManyPost, HasManyComment;
 
     protected $fillable = [
         'body',
