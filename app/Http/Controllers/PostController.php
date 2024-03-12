@@ -9,6 +9,7 @@ use App\Models\Post;
 use App\Services\FileService;
 use App\Services\PostImageService;
 use App\Services\PostService;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
@@ -24,9 +25,13 @@ class PostController extends BaseApiController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $perPage = $request->get('perPage');
+        $posts = $this->postService->getPosts($perPage);
+        return $this->sendResponse([
+            'posts' => PostResource::collection($posts)
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -55,9 +60,13 @@ class PostController extends BaseApiController
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
+    public function show(Post $post)
+    {   
+        $post = $this->postService->getPostById($post->id);
 
+        return $this->sendResponse([
+            'post' => PostResource::make($post)
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -67,20 +76,34 @@ class PostController extends BaseApiController
     {
         //
         $this->authorize('update', $post);
-        $validated = $request->validated();
-        $this->postService->updatePost($post->id,$validated);
-        $post = $this->postService->getPostById($post->id);
-        return $this->sendResponse([
-            "message" => __('post.update.success'),
-            "post" => PostResource::make($post)
-        ], Response::HTTP_OK);
+        try {
+            $validated = $request->validated();
+            $this->postService->updatePost($post->id,$validated);
+            $post = $this->postService->getPostById($post->id);
+            return $this->sendResponse([
+                "message" => __('post.update.success'),
+                "post" => PostResource::make($post)
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return $this->sendError(['error' => $th->getMessage()]);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Post $post)
     {
-        //
+        $this->authorize('delete', $post);
+        try {
+            $this->postService->deletePost($post);
+            return $this->sendResponse([
+                "message" => __('post.delete.success'),
+            ]);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return $this->sendError(['error' => $th->getMessage()]);
+        }
     }
 }

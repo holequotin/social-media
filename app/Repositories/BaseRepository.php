@@ -32,7 +32,7 @@ abstract class BaseRepository implements RepositoryInterface
 
     public function find($id)
     {
-        $result = $this->model->find($id);
+        $result = $this->model->findOrFail($id);
 
         return $result;
     }
@@ -63,5 +63,10 @@ abstract class BaseRepository implements RepositoryInterface
         }
 
         return false;
+    }
+
+    public function paginate($perPage = 10)
+    {
+        return $this->getModel()::paginate($perPage);
     }
 }

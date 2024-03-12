@@ -41,4 +41,14 @@ class PostImageRepository extends BaseRepository implements PostImageRepositoryI
 
         return $count == count($postImageId);
     }
+
+    public function getIdByPost($postId)
+    {
+        return $this->getModel()::where('post_id' , $postId)->pluck('id');
+    }
+
+    public function deletePostImageByPost($postId)
+    {   
+        return $this->getModel()::where('post_id',$postId)->delete();
+    }
 }
