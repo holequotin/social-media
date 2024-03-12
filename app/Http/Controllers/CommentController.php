@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Http\Resources\CommentResource;
+use App\Models\Comment;
 use App\Services\CommentService;
 use App\Services\FileService;
 use Illuminate\Http\Request;
@@ -65,8 +66,18 @@ class CommentController extends BaseApiController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Comment $comment)
     {
-        //
+        $this->authorize('delete', $comment);
+        try {
+            $this->commentService->deleteComment($comment);
+
+            return $this->sendResponse([
+                'message' => __('comment.delete.success')
+            ]);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return $this->sendError($th->getMessage());
+        }
     }
 }
