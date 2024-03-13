@@ -19,4 +19,9 @@ class ReactionService
     {
         return $this->reactionRepository->update($id,$data);
     }
+
+    public function deleteReaction($id)
+    {
+        return $this->reactionRepository->delete($id);
+    }
 }

@@ -7,5 +7,8 @@ return [
     ],
     'update' => [
         'success' => 'Updated reaction successfully'
+    ],
+    'delete' => [
+        'success' => 'Deleted reaction successfully'
     ]
 ];

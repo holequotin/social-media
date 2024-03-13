@@ -8,6 +8,7 @@ use App\Http\Resources\ReactionResource;
 use App\Models\Reaction;
 use App\Services\ReactionService;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class ReactionController extends BaseApiController
 {   
@@ -37,9 +38,11 @@ class ReactionController extends BaseApiController
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Reaction $reaction)
     {
-        //
+        return $this->sendResponse([
+            'reaction' => ReactionResource::make($reaction)
+        ]);
     }
 
     /**
@@ -59,8 +62,18 @@ class ReactionController extends BaseApiController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Reaction $reaction)
     {
-        //
+        $this->authorize('delete', $reaction);
+        try {
+            $this->reactionService->deleteReaction($reaction->id);
+            return $this->sendResponse([
+                'message' => __('reaction.delete.success')
+            ]);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return $this->sendError(['error' => $th->getMessage()]);
+        }
+        
     }
 }

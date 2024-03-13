@@ -19,4 +19,9 @@ class ReactionPolicy
     {
         return $reaction->user_id == $user->id;
     }
+
+    public function delete(User $user, Reaction $reaction)
+    {
+        return $reaction->user_id == $user->id;
+    }
 }
