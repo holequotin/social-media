@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Reaction\StoreReactionRequest;
+use App\Http\Requests\Reaction\UpdateReactionRequest;
 use App\Http\Resources\ReactionResource;
+use App\Models\Reaction;
 use App\Services\ReactionService;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class ReactionController extends BaseApiController
@@ -44,9 +45,15 @@ class ReactionController extends BaseApiController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateReactionRequest $request, Reaction $reaction)
     {
-        //
+        $this->authorize('update',$reaction);
+        $validated = $request->validated();
+        $reaction = $this->reactionService->updateReaction($reaction->id,$validated);
+        return $this->sendResponse([
+            'message' => __('reaction.update.success'),
+            'reaction' => ReactionResource::make($reaction)
+        ], Response::HTTP_OK);
     }
 
     /**
