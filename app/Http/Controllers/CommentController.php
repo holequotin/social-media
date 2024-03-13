@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Comment\StoreCommentRequest;
+use App\Http\Requests\Comment\UpdateCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Services\CommentService;
 use App\Services\FileService;
-use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class CommentController extends BaseApiController
@@ -31,11 +32,7 @@ class CommentController extends BaseApiController
     public function store(StoreCommentRequest $request)
     {
         $validated = $request->validated();
-        try {  
-            if(isset($validated['image'])){
-                $urls = $this->fileService->storeImage('comments',[$validated['image']]);
-                $validated['url'] = $urls[0];
-            }
+        try {
             $comment = $this->commentService->createComment($validated);
             return $this->sendResponse([
                 'message' => __('comment.create.success'),
@@ -58,9 +55,19 @@ class CommentController extends BaseApiController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateCommentRequest $request, Comment $comment)
     {
-        //
+        $validated = $request->validated();
+        try {
+            $comment = $this->commentService->updateComment($comment,$validated);
+            return $this->sendResponse([
+                "message" => __('comment.update.success'),
+                "post" => CommentResource::make($comment)
+            ], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th);
+            return $this->sendError(['error' => $th->getMessage()]);
+        }
     }
 
     /**
