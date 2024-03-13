@@ -47,7 +47,7 @@ class PostController extends BaseApiController
             $post = $this->postService->getPostById($post->id);
             
             return $this->sendResponse([
-                "message" => __('post.create.success'),
+                "message" => __('common.create.success', ['model' => 'post']),
                 "post" => PostResource::make($post)
             ], Response::HTTP_CREATED);
         } catch (\Throwable $th) {
@@ -81,7 +81,7 @@ class PostController extends BaseApiController
             $this->postService->updatePost($post->id,$validated);
             $post = $this->postService->getPostById($post->id);
             return $this->sendResponse([
-                "message" => __('post.update.success'),
+                "message" => __('common.update.success', ['model' => 'post']),
                 "post" => PostResource::make($post)
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
@@ -99,7 +99,7 @@ class PostController extends BaseApiController
         try {
             $this->postService->deletePost($post);
             return $this->sendResponse([
-                "message" => __('post.delete.success'),
+                "message" => __('common.delete.success', ['model' => 'post']),
             ]);
         } catch (\Throwable $th) {
             Log::error($th);

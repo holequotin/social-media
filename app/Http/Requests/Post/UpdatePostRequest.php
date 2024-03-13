@@ -55,7 +55,7 @@ class UpdatePostRequest extends FormRequest
                 if (!$this->checkValidImageCount($update_image_count, $delete_image_count)) {
                     $validator->errors()->add(
                         'images',
-                        __('post.images.max', ['max' => config('define.post.images.max_count')])
+                        __('common.post.images.max', ['max' => config('define.post.images.max_count')])
                     );
                 }
                 
@@ -64,7 +64,7 @@ class UpdatePostRequest extends FormRequest
                 if(!$this->postImageRepository->checkValidPostImage($post->id,$validated['delete_image_id'])){
                     $validator->errors()->add(
                         'delete_image_id',
-                        __('post.images.invalid')
+                        __('common.post.images.invalid')
                     );
                 }
             }

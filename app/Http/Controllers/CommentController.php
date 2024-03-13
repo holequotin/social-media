@@ -35,7 +35,7 @@ class CommentController extends BaseApiController
         try {
             $comment = $this->commentService->createComment($validated);
             return $this->sendResponse([
-                'message' => __('comment.create.success'),
+                'message' => __('common.create.success', ['model' => 'comment']),
                 'comment' => CommentResource::make($comment)
             ]);
         } catch (\Throwable $th) {
@@ -61,7 +61,7 @@ class CommentController extends BaseApiController
         try {
             $comment = $this->commentService->updateComment($comment,$validated);
             return $this->sendResponse([
-                "message" => __('comment.update.success'),
+                "message" => __('common.update.success', ['model' => 'comment']),
                 "post" => CommentResource::make($comment)
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
@@ -80,7 +80,7 @@ class CommentController extends BaseApiController
             $this->commentService->deleteComment($comment);
 
             return $this->sendResponse([
-                'message' => __('comment.delete.success')
+                'message' => __('common.delete.success', ['model' => 'comment'])
             ]);
         } catch (\Throwable $th) {
             Log::error($th);

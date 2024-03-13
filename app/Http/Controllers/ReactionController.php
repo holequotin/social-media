@@ -7,7 +7,6 @@ use App\Http\Requests\Reaction\UpdateReactionRequest;
 use App\Http\Resources\ReactionResource;
 use App\Models\Reaction;
 use App\Services\ReactionService;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class ReactionController extends BaseApiController
@@ -30,9 +29,9 @@ class ReactionController extends BaseApiController
         $validated = $request->validated();
         $reaction = $this->reactionService->createReaction($validated);
         return $this->sendResponse([
-            'message' => __('reaction.create.success'),
+            'message' => __('common.create.success', ['model' => 'reaction']),
             'reaction' => ReactionResource::make($reaction)
-        ], Response::HTTP_OK);
+        ], );
     }
 
     /**
@@ -54,9 +53,9 @@ class ReactionController extends BaseApiController
         $validated = $request->validated();
         $reaction = $this->reactionService->updateReaction($reaction->id,$validated);
         return $this->sendResponse([
-            'message' => __('reaction.update.success'),
+            'message' => __('common.update.success', ['model' => 'reaction']),
             'reaction' => ReactionResource::make($reaction)
-        ], Response::HTTP_OK);
+        ],);
     }
 
     /**
@@ -68,7 +67,7 @@ class ReactionController extends BaseApiController
         try {
             $this->reactionService->deleteReaction($reaction->id);
             return $this->sendResponse([
-                'message' => __('reaction.delete.success')
+                'message' => __('common.delete.success', ['model' => 'reaction'])
             ]);
         } catch (\Throwable $th) {
             Log::error($th);

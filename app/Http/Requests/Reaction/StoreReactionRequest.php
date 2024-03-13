@@ -28,28 +28,7 @@ class StoreReactionRequest extends FormRequest
     {
         return [
             'type' => ['string', 'required', 'in:' . implode(',', ReactionType::getValues())],
-            'post_id' => ['required', 'exists:posts,id']
+            'post_id' => ['required', 'exists:posts,id', 'unique:reactions,post_id,NULL,id,user_id,' . auth()->id()]
         ];
-    }
-
-    public function after(): array
-    {
-        return [
-            function (Validator $validator){
-                $validated = $this->validated();
-                if ($this->checkReactionExist($validated)) {
-                    $validator->errors()->add(
-                        'reaction',
-                        __('reaction.existed')
-                    );
-                }
-            }
-        ];
-    }
-
-    public function checkReactionExist($validated)
-    {
-        $reaction = $this->reactionRepository->getReactionByUserPost(auth()->user()->id, $validated['post_id']);
-        return $reaction ? true : false;
     }
 }
