@@ -1,7 +1,7 @@
 <?php
 namespace App\Services;
 
-use App\Models\Notification;
+use App\Enums\NotificationStatus;
 use Illuminate\Notifications\DatabaseNotification;
 
 class NotificationService
@@ -13,15 +13,12 @@ class NotificationService
     public function getNotificationByUser($user, $type = 'all')
     {
         switch ($type) {
-            case 'read':
+            case NotificationStatus::Read:
                 return DatabaseNotification::where('read_at','<>',null);
-                break;
-            case 'unread':
+            case NotificationStatus::Unread:
                 return $user->unreadNotifications();
-                break;
             default:
                 return $user->notifications();
-                break;
         }
     }
 }

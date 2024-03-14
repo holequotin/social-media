@@ -42,3 +42,12 @@ Route::resource('posts',PostController::class)->middleware(['api','auth:api'])->
 Route::resource('comments',CommentController::class)->middleware(['api','auth:api'])->except(['create','edit']);
 Route::resource('reactions',ReactionController::class)->middleware(['api','auth:api'])->except(['create','edit']);
 Route::resource('notifications', NotificationController::class)->middleware(['api','auth:api'])->only(['index','update']);
+
+Route::group([
+    'middleware' => ['api','auth:api'],
+    'prefix' => 'notifications'
+], function ($router) {
+    Route::get('/', [NotificationController::class,'index']);
+    Route::patch('/{notification}',[NotificationController::class,'markAsRead']);
+    Route::put('/{notification}',[NotificationController::class,'markAsRead']);
+});
