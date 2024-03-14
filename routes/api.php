@@ -22,32 +22,59 @@ Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
 ], function ($router) {
-    Route::post('register',[AuthController::class,'register']);
-    Route::post('login', [AuthController::class,'login']);
-    Route::post('forget_password',[AuthController::class,'forgetPassword']);
-    Route::get('verify',[AuthController::class,'verify']);
-    Route::post('refresh', [AuthController::class,'refresh']);
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('forget_password', [AuthController::class, 'forgetPassword']);
+    Route::get('verify', [AuthController::class, 'verify']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
 });
 
 Route::group([
-    'middleware' => ['api','auth:api'],
-    'prefix' => 'auth'
-], function ($router) {
-    Route::post('logout', [AuthController::class,'logout']);
-    Route::post('me', [AuthController::class,'me']);
-    Route::post('reset_password',[AuthController::class,'resetPassword']);
-});
+    'middleware' => ['api', 'auth:api'],
+], function () {
+    Route::group([
+        'prefix' => 'posts',
+        'as' => 'posts.'
+    ], function () {
+        Route::get('/', [PostController::class, 'index'])->name('index');
+        Route::post('/', [PostController::class, 'store'])->name('store');
+        Route::patch('/{post}', [PostController::class, 'update'])->name('update');
+        Route::delete('/{post}', [PostController::class, 'destroy'])->name('destroy');
+    });
 
-Route::resource('posts',PostController::class)->middleware(['api','auth:api'])->except(['create','edit']);
-Route::resource('comments',CommentController::class)->middleware(['api','auth:api'])->except(['create','edit']);
-Route::resource('reactions',ReactionController::class)->middleware(['api','auth:api'])->except(['create','edit']);
-Route::resource('notifications', NotificationController::class)->middleware(['api','auth:api'])->only(['index','update']);
+    Route::group([
+        'prefix' => 'comments',
+        'as' => 'comments.'
+    ], function () {
+        Route::get('/', [CommentController::class, 'index'])->name('index');
+        Route::post('/', [CommentController::class, 'store'])->name('store');
+        Route::patch('/{comment}', [CommentController::class, 'update'])->name('update');
+        Route::delete('/{comment}', [CommentController::class, 'destroy'])->name('destroy');
+    });
 
-Route::group([
-    'middleware' => ['api','auth:api'],
-    'prefix' => 'notifications'
-], function ($router) {
-    Route::get('/', [NotificationController::class,'index']);
-    Route::patch('/{notification}',[NotificationController::class,'markAsRead']);
-    Route::put('/{notification}',[NotificationController::class,'markAsRead']);
+    Route::group([
+        'prefix' => 'reactions',
+        'as' => 'reactions.'
+    ], function () {
+        Route::get('/', [ReactionController::class, 'index'])->name('index');
+        Route::post('/', [ReactionController::class, 'store'])->name('store');
+        Route::patch('/{reaction}', [ReactionController::class, 'update'])->name('update');
+        Route::delete('/{reaction}', [ReactionController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::group([
+        'prefix' => 'notifications',
+        'as' => 'notifications.'
+    ], function ($router) {
+        Route::get('/', [NotificationController::class, 'index'])->name('index');
+        Route::patch('/{notification}', [NotificationController::class, 'markAsRead'])->name('markAsRead');
+    });
+
+    Route::group([
+        'prefix' => 'auth'
+    ], function ($router) {
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::post('me', [AuthController::class, 'me']);
+        Route::post('reset_password', [AuthController::class, 'resetPassword']);
+    });
 });
