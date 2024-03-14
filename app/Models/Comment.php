@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\CommentCreated;
 use App\Models\Traits\BelongsToPost;
 use App\Models\Traits\BelongsToUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,5 +17,9 @@ class Comment extends Model
         'user_id',  
         'url',
         'post_id'
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => CommentCreated::class                                                          
     ];
 }
