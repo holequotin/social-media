@@ -11,7 +11,7 @@ use BenSampo\Enum\Enum;
  */
 final class PostType extends Enum
 {
-    const Private = 'private';
-    const Friends = 'friends';
-    const Public = 'public';
+    const PRIVATE = 'private';
+    const FRIENDS = 'friends';
+    const PUBLIC = 'public';
 }

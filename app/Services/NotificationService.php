@@ -13,9 +13,9 @@ class NotificationService
     public function getNotificationByUser($user, $type = 'all')
     {
         switch ($type) {
-            case NotificationStatus::Read:
+            case NotificationStatus::READ:
                 return DatabaseNotification::where('read_at','<>',null);
-            case NotificationStatus::Unread:
+            case NotificationStatus::NOT_READ:
                 return $user->unreadNotifications();
             default:
                 return $user->notifications();

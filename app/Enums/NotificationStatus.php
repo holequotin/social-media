@@ -11,6 +11,6 @@ use BenSampo\Enum\Enum;
  */
 final class NotificationStatus extends Enum
 {
-    const Read = "read";
-    const Unread = "unread";
+    const READ = "read";
+    const NOT_READ = "unread";
 }
