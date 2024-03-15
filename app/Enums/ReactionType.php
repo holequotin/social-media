@@ -11,9 +11,9 @@ use BenSampo\Enum\Enum;
  */
 final class ReactionType extends Enum
 {
-    const Like = "like";
-    const Love = "love";
-    const Haha = "haha";
-    const Wow = "wow";
-    const Sad = "sad";
+    const LIKE = "like";
+    const LOVE = "love";
+    const HAHA = "haha";
+    const WOW = "wow";
+    const SAD = "sad";
 }

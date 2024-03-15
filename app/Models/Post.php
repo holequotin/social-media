@@ -20,7 +20,7 @@ class Post extends Model
     ];
 
     protected $attributes = [
-        'type' => PostType::Public
+        'type' => PostType::PUBLIC
     ];
 
     public function images() : HasMany

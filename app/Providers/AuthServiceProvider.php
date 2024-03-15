@@ -8,9 +8,11 @@ use App\Models\Comment;
 use App\Models\Post;
 use App\Models\Reaction;
 use App\Policies\CommentPolicy;
+use App\Policies\NotificationPolicy;
 use App\Policies\PostPolicy;
 use App\Policies\ReactionPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Notifications\DatabaseNotification;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -23,7 +25,8 @@ class AuthServiceProvider extends ServiceProvider
         //
         Post::class => PostPolicy::class,
         Comment::class => CommentPolicy::class,
-        Reaction::class => ReactionPolicy::class
+        Reaction::class => ReactionPolicy::class,
+        DatabaseNotification::class => NotificationPolicy::class
     ];
 
     /**

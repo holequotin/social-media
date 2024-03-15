@@ -18,6 +18,8 @@ return [
     ],
     'reaction' => [
         'existed' => 'Reaction already exists',
+    ],
+    'notification' => [
+        'mark_as_read' => 'Marked notifications as read'
     ]
-    
 ];

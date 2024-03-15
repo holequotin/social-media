@@ -9,9 +9,8 @@ use BenSampo\Enum\Enum;
  * @method static static OptionTwo()
  * @method static static OptionThree()
  */
-final class PostType extends Enum
+final class NotificationStatus extends Enum
 {
-    const PRIVATE = 'private';
-    const FRIENDS = 'friends';
-    const PUBLIC = 'public';
+    const READ = "read";
+    const NOT_READ = "unread";
 }
