@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Models\Traits\HasFriends;
 use App\Models\Traits\HasManyComment;
 use App\Models\Traits\HasManyPost;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +15,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable, HasManyPost, HasManyComment;
+    use HasApiTokens, HasFactory, Notifiable, HasManyPost, HasManyComment, HasFriends;
 
     /**
      * The attributes that are mass assignable.

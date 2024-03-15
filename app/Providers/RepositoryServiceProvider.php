@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Repositories\Comment\CommentRepository;
 use App\Repositories\Comment\CommentRepositoryInterface;
+use App\Repositories\Friendship\FriendshipRepository;
+use App\Repositories\Friendship\FriendshipRepositoryInterface;
 use App\Repositories\Post\PostRepository;
 use App\Repositories\Post\PostRepositoryInterface;
 use App\Repositories\PostImage\PostImageRepository;
@@ -27,6 +29,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(PostImageRepositoryInterface::class, PostImageRepository::class);
         $this->app->bind(CommentRepositoryInterface::class, CommentRepository::class);
         $this->app->bind(ReactionRepositoryInterface::class, ReactionRepository::class);
+        $this->app->bind(FriendshipRepositoryInterface::class, FriendshipRepository::class);
     }
 
     /**

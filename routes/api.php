@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FriendshipController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReactionController;
@@ -72,6 +73,21 @@ Route::group(['middleware' => 'api'], function () {
         ], function ($router) {
             Route::get('/', [NotificationController::class, 'index'])->name('index');
             Route::patch('/{notification}', [NotificationController::class, 'markAsRead'])->name('markAsRead');
+        });
+
+        Route::group([
+            'prefix' => 'friendships',
+            'as' => 'friendships.'
+        ], function() {
+            Route::post('/', [FriendshipController::class, 'sendFriendRequest'])->name('send');
+            Route::patch('/{friendship}',[FriendshipController::class, 'acceptFriendRequest'])->name('accept');
+        });
+
+        Route::group([
+            'prefix' => 'users',
+            'as' => 'users.'
+        ],function() {
+            Route::get('/{user}/friends', [FriendshipController::class,'getFriendByUser'])->name('friends');
         });
     });
 });
