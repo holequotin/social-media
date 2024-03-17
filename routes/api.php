@@ -87,7 +87,7 @@ Route::group(['middleware' => 'api'], function () {
             'prefix' => 'users',
             'as' => 'users.'
         ],function() {
-            Route::get('/{user}/friends', [FriendshipController::class,'getFriendByUser'])->name('friends');
+            Route::get('/{user}/friends', [FriendshipController::class,'getFriendsByUser'])->name('friends');
         });
     });
 });

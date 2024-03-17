@@ -55,12 +55,23 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
-
+    
+    /**
+     * Friends who user send request
+     */
     public function friends(): BelongsToMany
     {
         return $this->belongsToMany(User::class,'friendships','from_user_id','to_user_id');
     }
     
+    /**
+     * Friends who send request to user
+     */
+    public function isFriends(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class,'friendships','to_user_id','from_user_id');
+    }
+
     public function posts() : HasMany
     {
         return $this->hasMany(Post::class);

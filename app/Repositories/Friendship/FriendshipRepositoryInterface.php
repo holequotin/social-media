@@ -5,5 +5,5 @@ use App\Repositories\RepositoryInterface;
 
 interface FriendshipRepositoryInterface extends RepositoryInterface
 {
-
+    public function getFriendsByUser($user);
 }

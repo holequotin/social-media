@@ -24,4 +24,9 @@ class FriendshipService
         }
         return $friendship;
     }
+
+    public function getFriendsByUser($user)
+    {
+        return $this->friendshipRepository->getFriendsByUser($user);
+    }
 }
