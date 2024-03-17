@@ -3,14 +3,13 @@
 namespace App\Models;
 
 use App\Events\CommentCreated;
-use App\Models\Traits\BelongsToPost;
-use App\Models\Traits\BelongsToUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Comment extends Model
 {
-    use HasFactory, BelongsToUser, BelongsToPost;
+    use HasFactory;
 
     protected $fillable = [
         'body',
@@ -22,4 +21,14 @@ class Comment extends Model
     protected $dispatchesEvents = [
         'created' => CommentCreated::class                                                          
     ];
+
+    public function post() : BelongsTo
+    {
+        return $this->belongsTo(Post::class);
+    }
+
+    public function user() : BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

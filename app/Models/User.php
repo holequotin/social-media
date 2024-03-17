@@ -2,12 +2,9 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
-use App\Models\Traits\HasFriends;
-use App\Models\Traits\HasManyComment;
-use App\Models\Traits\HasManyPost;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -15,7 +12,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable, HasManyPost, HasManyComment, HasFriends;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -57,5 +54,20 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function friends(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class,'friendships','from_user_id','to_user_id');
+    }
+    
+    public function posts() : HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function comments() : HasMany
+    {
+        return $this->hasMany(Comment::class);
     }
 }
