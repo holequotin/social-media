@@ -5,9 +5,11 @@ namespace App\Providers;
 // use Illuminate\Support\Facades\Gate;
 
 use App\Models\Comment;
+use App\Models\Friendship;
 use App\Models\Post;
 use App\Models\Reaction;
 use App\Policies\CommentPolicy;
+use App\Policies\FriendshipPolicy;
 use App\Policies\NotificationPolicy;
 use App\Policies\PostPolicy;
 use App\Policies\ReactionPolicy;
@@ -26,7 +28,8 @@ class AuthServiceProvider extends ServiceProvider
         Post::class => PostPolicy::class,
         Comment::class => CommentPolicy::class,
         Reaction::class => ReactionPolicy::class,
-        DatabaseNotification::class => NotificationPolicy::class
+        DatabaseNotification::class => NotificationPolicy::class,
+        Friendship::class => FriendshipPolicy::class
     ];
 
     /**

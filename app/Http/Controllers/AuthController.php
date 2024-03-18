@@ -150,7 +150,7 @@ class AuthController extends BaseApiController
         $user = $this->userService->updateUser($user->id, $validated);
         auth()->logout(true);
         if ($user) {
-            return $this->sendResponse(["message" => "Reset password successfully",], __("auth.reset_password"));
+            return $this->sendResponse(["message" => __("auth.reset_password")]);
         }
 
         return $this->sendError(["error" => __("auth.token.invalid")], Response::HTTP_UNAUTHORIZED);
