@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Friendship\SendFriendRequest;
+use App\Http\Requests\Friendship\UnfriendRequest;
 use App\Http\Resources\FriendshipResource;
 use App\Http\Resources\UserResource;
 use App\Models\Friendship;
@@ -38,5 +39,12 @@ class FriendshipController extends BaseApiController
         $friendship = $this->friendshipService->acceptFriendRequest($friendship);
     
         return $this->sendResponse(['friendship' => FriendshipResource::make($friendship)]);
+    }
+
+    public function unfriend(UnfriendRequest $request)
+    {
+        $validated = $request->validated();
+        $this->friendshipService->unfriend($validated);
+        return $this->sendResponse(['message' => __('common.friendship.deleted')]);
     }
 }

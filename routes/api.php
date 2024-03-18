@@ -81,6 +81,7 @@ Route::group(['middleware' => 'api'], function () {
         ], function() {
             Route::post('/', [FriendshipController::class, 'sendFriendRequest'])->name('send');
             Route::patch('/{friendship}',[FriendshipController::class, 'acceptFriendRequest'])->name('accept');
+            Route::post('/delete', [FriendshipController::class, 'unfriend'])->name('unfriend');
         });
 
         Route::group([

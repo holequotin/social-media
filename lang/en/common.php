@@ -21,5 +21,9 @@ return [
     ],
     'notification' => [
         'mark_as_read' => 'Marked notifications as read'
+    ],
+    'friendship' => [
+        'not_exist' => 'Friendship does not exist',
+        'deleted' => 'Unfriend successfully'
     ]
 ];
