@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Events\CommentCreated;
+use App\Events\FriendshipCreated;
 use App\Listeners\SendCommentedNotification;
+use App\Listeners\SendFriendshipCreatedNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -28,6 +30,7 @@ class EventServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Event::listen(CommentCreated::class, SendCommentedNotification::class);
+        Event::listen(FriendshipCreated::class, SendFriendshipCreatedNotification::class);
     }
 
     /**
