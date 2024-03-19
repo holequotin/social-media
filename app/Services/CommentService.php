@@ -37,7 +37,7 @@ class CommentService
     }
 
     public function updateComment(Comment $comment, $data)
-    {
+    {   
         if ($data['delete_image']) {
             $this->deleteImageComment($comment);
             $data['url'] = null;
@@ -46,7 +46,6 @@ class CommentService
             $this->deleteImageComment($comment);
             $data = $this->addUrl($data);
         }
-
         return $this->commentRepository->update($comment->id,$data);
     }
     /**
@@ -74,7 +73,7 @@ class CommentService
     public function addUrl($validated)
     {
         if (isset($validated['image'])) {
-            $urls = $this->fileService->storeImage('comments', [$validated['image']]);
+            $urls = $this->fileService->storeImage('comments/'.auth()->user()->id, [$validated['image']]);
             $validated['url'] = $urls[0];
         }
         return $validated;

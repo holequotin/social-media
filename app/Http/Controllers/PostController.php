@@ -42,8 +42,8 @@ class PostController extends BaseApiController
         $validated = $request->validated();
         try {
             $post = $this->postService->createPost($validated);
-            $urls = $this->fileService->storeImage('posts',$validated['images']);
-            $this->postImageService->createPostImages($urls,$post->id);
+            $this->postImageService->createPostImages($validated['images'],$post->id);
+            $urls = $this->fileService->storeImage('posts/'.$post->id,$validated['images']);
             $post = $this->postService->getPostById($post->id);
             
             return $this->sendResponse([

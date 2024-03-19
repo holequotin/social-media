@@ -30,9 +30,9 @@ class PostService
     {
         try {
             DB::beginTransaction();
-            $urls = $this->fileService->storeImage('posts', $validated['images']);
-            $this->postImageService->createPostImages($urls, $postId);
+            $this->postImageService->createPostImages($validated['images'], $postId);
             $this->postImageService->deletePostImagesById($validated['delete_image_id']);
+            $urls = $this->fileService->storeImage('posts/'.$postId, $validated['images']);
             DB::commit();
             return $this->postRepository->update($postId, $validated);
         } catch (\Throwable $th) {
