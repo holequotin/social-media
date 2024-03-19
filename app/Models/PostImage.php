@@ -19,7 +19,7 @@ class PostImage extends Model
     protected function url(): Attribute
     {
         return Attribute::make(
-            get: fn(string $value) => config('app.url').$value
+            get: fn(string $value) => config('app.url').$value,
         );
     }
 

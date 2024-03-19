@@ -18,7 +18,8 @@ class FileService
     {
         $urls = [];
         foreach ($images as $image) {
-            $path = Storage::disk('local')->put('public/' . $directory, $image);
+            $extension = $image->getClientOriginalExtension();
+            $path = Storage::disk('local')->putFileAs('public/' . $directory, $image, $image->hashName());
             $urls[] = Storage::url($path);
         }
         return $urls;
@@ -34,5 +35,10 @@ class FileService
     public function deleteImage($paths = [])
     {
         return Storage::delete($paths);
+    }
+
+    public function deleteImageByPost($postId)
+    {
+        return Storage::deleteDirectory('public/posts/'.$postId);
     }
 }
