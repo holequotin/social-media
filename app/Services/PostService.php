@@ -41,9 +41,9 @@ class PostService
         }
     }
 
-    public function getPosts($perPage = 10)
+    public function getPosts()
     {
-        return $this->postRepository->paginate($perPage);
+        return $this->postRepository->getPosts();
     }
 
     public function deletePost(Post $post)

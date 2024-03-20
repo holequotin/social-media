@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Friendship;
 
+use App\Enums\FriendshipStatus;
 use App\Models\Friendship;
 use App\Repositories\BaseRepository;
 
@@ -14,8 +15,8 @@ class FriendshipRepository extends BaseRepository implements FriendshipRepositor
 
     public function getFriendsByUser($user)
     {
-        $send_friends = $user->friends()->getQuery()->select('users.*');
-        $be_send_friends = $user->isFriends()->getQuery()->select('users.*');
+        $send_friends = $user->friends()->where('status', FriendshipStatus::ACCEPTED)->getQuery()->select('users.*');
+        $be_send_friends = $user->isFriends()->where('status', FriendshipStatus::ACCEPTED)->getQuery()->select('users.*');
         return $send_friends->union($be_send_friends);
     }
 

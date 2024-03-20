@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
-class PostController extends BaseApiController  
+class PostController extends BaseApiController
 {
     public function __construct(
         protected PostService $postService,
@@ -28,10 +28,8 @@ class PostController extends BaseApiController
     public function index(Request $request)
     {
         $perPage = $request->get('perPage');
-        $posts = $this->postService->getPosts($perPage);
-        return $this->sendResponse([
-            'posts' => PostResource::collection($posts)
-        ], Response::HTTP_OK);
+        $posts = $this->postService->getPosts()->paginate();
+        return $this->sendResponse(PostResource::collection($posts),Response::HTTP_OK);
     }
 
     /**
@@ -42,10 +40,10 @@ class PostController extends BaseApiController
         $validated = $request->validated();
         try {
             $post = $this->postService->createPost($validated);
-            $this->postImageService->createPostImages($validated['images'],$post->id);
-            $urls = $this->fileService->storeImage('posts/'.$post->id,$validated['images']);
+            $this->postImageService->createPostImages($validated['images'], $post->id);
+            $urls = $this->fileService->storeImage('posts/' . $post->id, $validated['images']);
             $post = $this->postService->getPostById($post->id);
-            
+
             return $this->sendResponse([
                 "message" => __('common.create.success', ['model' => 'post']),
                 "post" => PostResource::make($post)
@@ -61,7 +59,7 @@ class PostController extends BaseApiController
      * Display the specified resource.
      */
     public function show(Post $post)
-    {   
+    {
         $post = $this->postService->getPostById($post->id);
 
         return $this->sendResponse([
@@ -78,7 +76,7 @@ class PostController extends BaseApiController
         $this->authorize('update', $post);
         try {
             $validated = $request->validated();
-            $this->postService->updatePost($post->id,$validated);
+            $this->postService->updatePost($post->id, $validated);
             $post = $this->postService->getPostById($post->id);
             return $this->sendResponse([
                 "message" => __('common.update.success', ['model' => 'post']),
