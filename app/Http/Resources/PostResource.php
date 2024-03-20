@@ -20,7 +20,8 @@ class PostResource extends JsonResource
             'type' => $this->type,
             'images' => PostImageResource::collection($this->whenLoaded('images')),
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'updated_at' => $this->updated_at,
+            'user' => UserResource::make($this->whenLoaded('user'))
         ];
     }
 }
