@@ -12,6 +12,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
 
     public function __construct(protected FriendshipRepositoryInterface $friendshipRepository)
     {
+        parent::__construct();
     }
 
     public function getModel()
@@ -36,7 +37,21 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
             ->orWhere(function ($query) use ($friends) {
                 $query->where('type', PostType::FRIENDS)
                     ->whereIn('user_id', $friends);
-            })->with('user');
+            })->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions']);
         return $posts;
+    }   
+
+    public function getPostsByUser($user)
+    {
+        if ($user->is(auth()->user())) {
+            return $this->getModel()::where('user_id', $user->id)->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions']);
+        }
+        $query = $this->getModel()::where('user_id', $user->id)
+            ->where('type', PostType::PUBLIC);
+        if($user->checkIsFriend(auth()->user()))
+        {
+            $query = $query->orWhere('type', PostType::FRIENDS);
+        }
+        return $query->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions']);;
     }
 }

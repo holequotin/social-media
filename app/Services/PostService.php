@@ -46,6 +46,11 @@ class PostService
         return $this->postRepository->getPosts();
     }
 
+    public function getPostsByUser($user)
+    {
+        return $this->postRepository->getPostsByUser($user);
+    }
+
     public function deletePost(Post $post)
     {
         try {
