@@ -36,8 +36,7 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
     {
         return (new MailMessage)
                     ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Token'.$this->token)
+                    ->action('Notification Action', url('http://127.0.0.1:5173/reset_password?token='.$this->token))
                     ->line('Thank you for using our application!');
     }
 

@@ -19,6 +19,8 @@ class PostResource extends JsonResource
             'body' => $this->body,
             'type' => $this->type,
             'images' => PostImageResource::collection($this->whenLoaded('images')),
+            'total_reaction' => $this->reactions()->paginate()->total(),
+            'current_reaction' =>  ReactionResource::make($this->reactions()->where('user_id',auth()->user()->id)->first()),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'user' => UserResource::make($this->whenLoaded('user'))

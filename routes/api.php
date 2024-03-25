@@ -6,6 +6,7 @@ use App\Http\Controllers\FriendshipController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReactionController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,6 +46,8 @@ Route::group(['middleware' => 'api'], function () {
             Route::post('/', [PostController::class, 'store'])->name('store');
             Route::patch('/{post}', [PostController::class, 'update'])->name('update');
             Route::delete('/{post}', [PostController::class, 'destroy'])->name('destroy');
+            Route::get('/{post}/comments', [CommentController::class, 'getCommentsByPost'])->name('comments');
+            Route::get('/{post}/reactions', [ReactionController::class,'getReactionsByPost'])->name('reactions');
         });
     
         Route::group([
@@ -82,6 +85,8 @@ Route::group(['middleware' => 'api'], function () {
             Route::post('/', [FriendshipController::class, 'sendFriendRequest'])->name('send');
             Route::patch('/{friendship}',[FriendshipController::class, 'acceptFriendRequest'])->name('accept');
             Route::post('/delete', [FriendshipController::class, 'unfriend'])->name('unfriend');
+            Route::get('/requests',[FriendshipController::class,'getFriendRequest'])->name('requests');
+            Route::get('/{user}', [FriendshipController::class, 'getFriendship']);
         });
 
         Route::group([
@@ -89,6 +94,8 @@ Route::group(['middleware' => 'api'], function () {
             'as' => 'users.'
         ],function() {
             Route::get('/{user}/friends', [FriendshipController::class,'getFriendsByUser'])->name('friends');
+            Route::get('/{user}/posts',[PostController::class,'getPostsByUser'])->name('posts');
+            Route::get('/{user}',[UserController::class,'show'])->name('show');
         });
     });
 });

@@ -6,6 +6,7 @@ use App\Http\Requests\Post\StorePostRequest;
 use App\Http\Requests\Post\UpdatePostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use App\Models\User;
 use App\Services\FileService;
 use App\Services\PostImageService;
 use App\Services\PostService;
@@ -28,7 +29,7 @@ class PostController extends BaseApiController
     public function index(Request $request)
     {
         $perPage = $request->get('perPage');
-        $posts = $this->postService->getPosts()->paginate();
+        $posts = $this->postService->getPosts()->paginate($perPage);
         return $this->sendResponse(PostResource::collection($posts),Response::HTTP_OK);
     }
 
@@ -103,5 +104,12 @@ class PostController extends BaseApiController
             Log::error($th);
             return $this->sendError(['error' => $th->getMessage()]);
         }
+    }
+
+    public function getPostsByUser(Request $request,User $user)
+    {
+        $perPage = $request->perPage;
+        $posts = $this->postService->getPostsByUser($user)->paginate($perPage);
+        return $this->sendResponse(PostResource::collection($posts));
     }
 }

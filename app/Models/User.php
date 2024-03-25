@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\FriendshipStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -55,29 +56,35 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
-    
+
     /**
      * Friends who user send request
      */
     public function friends(): BelongsToMany
     {
-        return $this->belongsToMany(User::class,'friendships','from_user_id','to_user_id');
+        return $this->belongsToMany(User::class, 'friendships', 'from_user_id', 'to_user_id');
     }
-    
+
     /**
      * Friends who send request to user
      */
     public function isFriends(): BelongsToMany
     {
-        return $this->belongsToMany(User::class,'friendships','to_user_id','from_user_id');
+        return $this->belongsToMany(User::class, 'friendships', 'to_user_id', 'from_user_id');
     }
 
-    public function posts() : HasMany
+    public function checkIsFriend(User $user)
+    {
+        return $this->friends()->wherePivot('to_user_id', $user->id)->wherePivot('status', FriendshipStatus::ACCEPTED)->exists() ||
+            $this->isFriends()->wherePivot('from_user_id', $user->id)->wherePivot('status', FriendshipStatus::ACCEPTED)->exists();
+    }
+
+    public function posts(): HasMany
     {
         return $this->hasMany(Post::class);
     }
 
-    public function comments() : HasMany
+    public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
     }
