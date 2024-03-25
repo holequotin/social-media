@@ -28,11 +28,19 @@ class FriendshipRepository extends BaseRepository implements FriendshipRepositor
                 $query->where('from_user_id', $friendId)
                     ->where('to_user_id', $userId);
             })
+            ->with(['fromUser', 'toUser'])
             ->first();
     }
 
     public function deleteFriendship($userId, $friendId)
     {
         return $this->getFriendship($userId, $friendId)->delete();
+    }
+
+    public function getFriendRequest($userId)
+    {
+        return $this->getModel()::where('to_user_id', $userId)
+            ->where('status', FriendshipStatus::PENDING)
+            ->with(['fromUser']);
     }
 }

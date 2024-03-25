@@ -22,7 +22,7 @@ class FriendshipController extends BaseApiController
     {
         $perPage = $request->perPage;
         $friends = $this->friendshipService->getFriendsByUser($user)->paginate($perPage);
-        return $this->sendResponse([UserResource::collection($friends)]);
+        return $this->sendResponse(UserResource::collection($friends));
     }
 
     public function sendFriendRequest(SendFriendRequest $request)
@@ -46,5 +46,19 @@ class FriendshipController extends BaseApiController
         $validated = $request->validated();
         $this->friendshipService->unfriend($validated);
         return $this->sendResponse(['message' => __('common.friendship.deleted')]);
+    }
+
+    public function getFriendship(Request $request, User $user)
+    {
+        $friendship = $this->friendshipService->getFriendship(auth()->user()->id, $user->id);
+        if($friendship) return $this->sendResponse(FriendshipResource::make($friendship));
+        return $this->sendError(["message" => "Friendship not found"], Response::HTTP_NOT_FOUND);
+    }
+
+    public function getFriendRequest(Request $request)
+    {
+        $perPage = $request->perPage;
+        $friendships = $this->friendshipService->getFriendRequest(auth()->user()->id)->paginate($perPage);
+        return $this->sendResponse(FriendshipResource::collection($friendships));
     }
 }
