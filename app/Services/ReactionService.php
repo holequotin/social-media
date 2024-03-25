@@ -24,4 +24,9 @@ class ReactionService
     {
         return $this->reactionRepository->delete($id);
     }
+
+    public function getReactionsByPost($postId, $type)
+    {
+        return $this->reactionRepository->getReactionsByPost($postId, $type);
+    }
 }

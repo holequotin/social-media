@@ -20,7 +20,18 @@ class ReactionRepository extends BaseRepository implements ReactionRepositoryInt
     public function getReactionByUserPost($userId, $postId)
     {
         return $this->getModel()::where('user_id', $userId)
-                                ->where('post_id', $postId)
-                                ->first();
+            ->where('post_id', $postId)
+            ->with(['user'])
+            ->first();
+    }
+
+    public function getReactionsByPost($postId, $type)
+    {
+        if ($type) {
+            return $this->getModel()::where('post_id', $postId)
+                ->where('type', $type)
+                ->with(['user']);
+        }
+        return $this->getModel()::where('post_id', $postId)->with(['user']);
     }
 }

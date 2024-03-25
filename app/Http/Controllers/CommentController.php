@@ -6,8 +6,10 @@ use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Http\Requests\Comment\UpdateCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
+use App\Models\Post;
 use App\Services\CommentService;
 use App\Services\FileService;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
@@ -86,5 +88,12 @@ class CommentController extends BaseApiController
             Log::error($th);
             return $this->sendError($th->getMessage());
         }
+    }
+
+    public function getCommentsByPost(Request $request, Post $post)
+    {
+        $perPage = $request->perPage;
+        $comments = $this->commentService->getCommentsByPost($post)->paginate($perPage);
+        return $this->sendResponse(CommentResource::collection($comments));
     }
 }

@@ -34,4 +34,14 @@ class FriendshipService
     {
         return $this->friendshipRepository->deleteFriendship(auth()->user()->id, $validated['friend_id']);
     }
+
+    public function getFriendship($userId, $friendId)
+    {
+        return $this->friendshipRepository->getFriendship($userId, $friendId);
+    }
+
+    public function getFriendRequest($userId)
+    {
+        return $this->friendshipRepository->getFriendRequest($userId);
+    }
 }

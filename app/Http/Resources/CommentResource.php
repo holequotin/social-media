@@ -19,7 +19,7 @@ class CommentResource extends JsonResource
             'body' => $this->body,
             'url' => $this->url,
             'post_id' => $this->post_id,
-            'user_id' => $this->user_id
+            'user' => UserResource::make($this->whenLoaded('user'))
         ];
     }
 }

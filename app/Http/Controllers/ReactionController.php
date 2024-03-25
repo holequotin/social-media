@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Reaction\StoreReactionRequest;
 use App\Http\Requests\Reaction\UpdateReactionRequest;
 use App\Http\Resources\ReactionResource;
+use App\Models\Post;
 use App\Models\Reaction;
 use App\Services\ReactionService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class ReactionController extends BaseApiController
-{   
-    public function __construct(protected ReactionService $reactionService) {
+{
+    public function __construct(protected ReactionService $reactionService)
+    {
     }
     /**
      * Display a listing of the resource.
@@ -31,7 +34,7 @@ class ReactionController extends BaseApiController
         return $this->sendResponse([
             'message' => __('common.create.success', ['model' => 'reaction']),
             'reaction' => ReactionResource::make($reaction)
-        ], );
+        ],);
     }
 
     /**
@@ -49,9 +52,9 @@ class ReactionController extends BaseApiController
      */
     public function update(UpdateReactionRequest $request, Reaction $reaction)
     {
-        $this->authorize('update',$reaction);
+        $this->authorize('update', $reaction);
         $validated = $request->validated();
-        $reaction = $this->reactionService->updateReaction($reaction->id,$validated);
+        $reaction = $this->reactionService->updateReaction($reaction->id, $validated);
         return $this->sendResponse([
             'message' => __('common.update.success', ['model' => 'reaction']),
             'reaction' => ReactionResource::make($reaction)
@@ -73,6 +76,15 @@ class ReactionController extends BaseApiController
             Log::error($th);
             return $this->sendError(['error' => $th->getMessage()]);
         }
-        
+    }
+
+    public function getReactionsByPost(Request $request, Post $post)
+    {
+        $type = $request->type;
+        $perPage = $request->perPage;
+
+        $reactions = $this->reactionService->getReactionsByPost($post->id, $type)->paginate($perPage);
+
+        return $this->sendResponse(ReactionResource::collection($reactions));
     }
 }

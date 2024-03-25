@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helpers\ImageHelper;
 use App\Models\Comment;
+use App\Models\Post;
 use App\Repositories\Comment\CommentRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 
@@ -78,4 +79,9 @@ class CommentService
         }
         return $validated;
     }
-}
+
+    public function getCommentsByPost(Post $post)
+    {
+        return $this->commentRepository->getCommentsByPost($post);
+    }
+}   
