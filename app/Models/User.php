@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -23,9 +24,22 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
         'name',
         'email',
+        'avatar',
         'password',
         'email_verified_at'
     ];
+
+    protected function avatar(): Attribute
+    {
+        return Attribute::make(
+            get: function($value) {
+                if($value){
+                    return config('app.url').$value;
+                }
+                return $value;
+            }
+        );
+    }
 
     /**
      * The attributes that should be hidden for serialization.

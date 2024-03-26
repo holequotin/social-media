@@ -98,6 +98,7 @@ Route::group(['middleware' => 'api'], function () {
             Route::get('/{user}',[UserController::class,'show'])->name('show');
             Route::patch('/', [UserController::class, 'update'])->name('update');
             Route::patch('/change_password',[UserController::class,'updatePassword'])->name('changePassword');
+            Route::patch('/avatar', [UserController::class, 'uploadAvatar'])->name('uploadAvatar');
         });
     });
 });
