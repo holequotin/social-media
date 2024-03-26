@@ -2,12 +2,17 @@
 
 namespace App\Services;
 
+use App\Helpers\ImageHelper;
+use App\Models\User;
 use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
-    public function __construct(protected UserRepositoryInterface $userRepository)
+    public function __construct(
+        protected UserRepositoryInterface $userRepository,
+        protected FileService $fileService
+    )
     {
     }
 
@@ -33,5 +38,21 @@ class UserService
     public function getUserById($id)
     {
         return $this->userRepository->find($id);
+    }
+
+    public function uploadAvatar(User $user, array $validated)
+    {
+        $this->deleteAvatar($user);
+        $validated = ImageHelper::addUrl($validated, 'avatars/'.$user->id,'avatar');
+        return $this->userRepository->update($user->id, $validated);
+    }
+
+    public function deleteAvatar(User $user)
+    {
+        if($user->avatar) {
+            $urls = collect([$user->avatar]);
+            $paths = ImageHelper::urlsToPaths($urls);
+            $this->fileService->deleteImage($paths->all());
+        }
     }
 }
