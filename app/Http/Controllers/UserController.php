@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -22,5 +23,12 @@ class UserController extends BaseApiController
         $validated = $request->validated();
         $user = $this->userService->updateUser(auth()->user()->id, $validated);
         return $this->sendResponse(UserResource::make($user));
+    }
+
+    public function updatePassword(ResetPasswordRequest $request)
+    {
+        $validated = $request->validated();
+        $user = $this->userService->updateUser(auth()->user()->id, $validated);
+        return $this->sendResponse(['message' => __('auth.reset_password')]);
     }
 }
