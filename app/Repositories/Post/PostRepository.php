@@ -50,7 +50,10 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
             ->where('type', PostType::PUBLIC);
         if($user->checkIsFriend(auth()->user()))
         {
-            $query = $query->orWhere('type', PostType::FRIENDS);
+            $query = $query->orWhere(function($query) use ($user) {
+                return $query->where('user_id', $user->id)
+                            ->where('type', PostType::FRIENDS);
+            });
         }
         return $query->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions']);;
     }
