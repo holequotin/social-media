@@ -8,25 +8,24 @@ class FileService
 {
     /**
      * Store images and return paths
-     * 
+     *
      * @param string $directory
      * @param array $images
-     * 
+     *
      * @return array
      */
     public function storeImage($directory, $images)
     {
         $paths = [];
         foreach ($images as $image) {
-            $extension = $image->getClientOriginalExtension();
-            $paths[] = Storage::disk('local')->putFileAs('public/' . $directory, $image, $image->hashName());
+            $paths[] = Storage::putFileAs($directory, $image, $image->hashName());
         }
         return $paths;
     }
 
     /**
      * Delete images
-     * 
+     *
      * @param array $paths
      *
      * @return bool

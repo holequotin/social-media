@@ -17,7 +17,7 @@ class PostImageResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'url' => config('app.url').Storage::url($this->url),
+            'url' => Storage::url($this->url),
             'post_id' => $this->post_id
         ];
     }

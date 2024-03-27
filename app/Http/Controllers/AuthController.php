@@ -8,14 +8,12 @@ use App\Http\Requests\Auth\RefreshTokenRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Resources\UserResource;
-use App\Models\User;
 use App\Services\AuthService;
 use App\Services\EmailVerifyService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\JWT;
 
 class AuthController extends BaseApiController
 {
@@ -78,7 +76,7 @@ class AuthController extends BaseApiController
      */
     public function me()
     {
-        return $this->sendResponse(auth()->user());
+        return $this->sendResponse(UserResource::make(auth()->user()));
     }
 
     /**
@@ -103,10 +101,10 @@ class AuthController extends BaseApiController
         $token = $this->authService->refreshToken($validated["refresh_token"]);
         return $this->respondWithToken($token, $validated["refresh_token"]);
     }
-    
+
     /**
      * Verify user email
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function verify()
@@ -123,7 +121,7 @@ class AuthController extends BaseApiController
 
     /**
      * Request to send reset password email
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function forgetPassword(ForgetPasswordRequest $request)
@@ -140,7 +138,7 @@ class AuthController extends BaseApiController
 
     /**
      * Reset password
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function resetPassword(ResetPasswordRequest $request)

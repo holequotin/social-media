@@ -18,7 +18,7 @@ class CommentResource extends JsonResource
         return [
             'id' => $this->id,
             'body' => $this->body,
-            'url' => config('app.url').Storage::url($this->url),
+            'url' => Storage::url($this->url),
             'post_id' => $this->post_id,
             'user' => UserResource::make($this->whenLoaded('user'))
         ];
