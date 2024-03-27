@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Storage;
 class FileService
 {
     /**
-     * Store images and return urls
+     * Store images and return paths
      * 
      * @param string $directory
      * @param array $images
@@ -16,13 +16,12 @@ class FileService
      */
     public function storeImage($directory, $images)
     {
-        $urls = [];
+        $paths = [];
         foreach ($images as $image) {
             $extension = $image->getClientOriginalExtension();
-            $path = Storage::disk('local')->putFileAs('public/' . $directory, $image, $image->hashName());
-            $urls[] = Storage::url($path);
+            $paths[] = Storage::disk('local')->putFileAs('public/' . $directory, $image, $image->hashName());
         }
-        return $urls;
+        return $paths;
     }
 
     /**

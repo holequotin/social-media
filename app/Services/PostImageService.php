@@ -1,10 +1,8 @@
 <?php
 namespace App\Services;
 
-use App\Helpers\ImageHelper;
 use App\Repositories\PostImage\PostImageRepositoryInterface;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class PostImageService
 {
@@ -17,7 +15,7 @@ class PostImageService
     {   
         $collection = collect($images);
         $values = $collection->map(function ($value, $key) use ($postId) {
-            return ['url' => Storage::url('posts/'.$postId.'/').$value->hashName(),'post_id' => $postId];
+            return ['url' => 'public/posts/'.$postId.'/'.$value->hashName(),'post_id' => $postId];
         });
         return $this->postImageRepository->insert($values->all());
     }
@@ -26,9 +24,8 @@ class PostImageService
     {
         try {
             DB::beginTransaction();
-            $urls = $this->postImageRepository->getUrlsById($postImageId);
+            $paths = $this->postImageRepository->getPathsById($postImageId);
             $result = $this->postImageRepository->destroy($postImageId);
-            $paths = ImageHelper::urlsToPaths($urls);
             $this->fileService->deleteImage($paths->all());
             DB::commit();
             return $result;

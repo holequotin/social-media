@@ -43,15 +43,14 @@ class UserService
     public function uploadAvatar(User $user, array $validated)
     {
         $this->deleteAvatar($user);
-        $validated = ImageHelper::addUrl($validated, 'avatars/'.$user->id,'avatar');
+        $validated = ImageHelper::addPath($validated, 'avatars/'.$user->id,'avatar');
         return $this->userRepository->update($user->id, $validated);
     }
 
     public function deleteAvatar(User $user)
     {
         if($user->avatar) {
-            $urls = collect([$user->avatar]);
-            $paths = ImageHelper::urlsToPaths($urls);
+            $paths = collect([$user->avatar]);
             $this->fileService->deleteImage($paths->all());
         }
     }

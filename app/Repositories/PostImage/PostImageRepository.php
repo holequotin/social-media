@@ -28,7 +28,7 @@ class PostImageRepository extends BaseRepository implements PostImageRepositoryI
         return $this->getModel()::destroy($postImageId);
     }
 
-    public function getUrlsById($postImageId = [])
+    public function getPathsById($postImageId = [])
     {
         return $this->getModel()::whereIn('id' , $postImageId)->pluck('url');
     }
