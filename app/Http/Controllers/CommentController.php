@@ -64,7 +64,7 @@ class CommentController extends BaseApiController
             $comment = $this->commentService->updateComment($comment,$validated);
             return $this->sendResponse([
                 "message" => __('common.update.success', ['model' => 'comment']),
-                "post" => CommentResource::make($comment)
+                "comment" => CommentResource::make($comment)
             ], Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th);

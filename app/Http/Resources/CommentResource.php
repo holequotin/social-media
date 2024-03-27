@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class CommentResource extends JsonResource
 {
@@ -17,7 +18,7 @@ class CommentResource extends JsonResource
         return [
             'id' => $this->id,
             'body' => $this->body,
-            'url' => $this->url,
+            'url' => Storage::url($this->url),
             'post_id' => $this->post_id,
             'user' => UserResource::make($this->whenLoaded('user'))
         ];

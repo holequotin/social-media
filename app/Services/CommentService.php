@@ -19,7 +19,7 @@ class CommentService
     public function createComment($data)
     {
         $data['user_id'] = auth()->user()->id;
-        $data = $this->addUrl($data);
+        $data = ImageHelper::addPath($data, 'comments/'.auth()->user()->id, 'url');
         return $this->commentRepository->create($data);
     }
 
@@ -45,7 +45,7 @@ class CommentService
         }
         if (isset($data['image'])) {
             $this->deleteImageComment($comment);
-            $data = $this->addUrl($data);
+            $data = ImageHelper::addPath($data, 'comments/'.auth()->user()->id, 'url');
         }
         return $this->commentRepository->update($comment->id,$data);
     }
@@ -58,26 +58,10 @@ class CommentService
      */
     public function deleteImageComment($comment)
     {
-        $urls = collect([$comment->url]);
+        $paths = collect([$comment->url]);
         if ($comment->url) {
-            $paths = ImageHelper::urlsToPaths($urls);
             $this->fileService->deleteImage($paths->all());
         }
-    }
-    /**
-     * Add url to validated when validated have image
-     * 
-     * @param $validated
-     * 
-     * @return array
-     */
-    public function addUrl($validated)
-    {
-        if (isset($validated['image'])) {
-            $urls = $this->fileService->storeImage('comments/'.auth()->user()->id, [$validated['image']]);
-            $validated['url'] = $urls[0];
-        }
-        return $validated;
     }
 
     public function getCommentsByPost(Post $post)

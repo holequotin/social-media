@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class UploadAvatarRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return auth()->check();
     }
 
     /**
@@ -22,10 +22,7 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['email','required','unique:users'],
-            'name' => ['string','required', 'min:6'],
-            'password' => ['string','min:6','confirmed','required'],
-            'password_confirmation' => ['string','min:6','required']
+            'image' => ['required','image','max:2048'],
         ];
     }
 }
