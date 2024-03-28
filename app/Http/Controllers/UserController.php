@@ -22,14 +22,14 @@ class UserController extends BaseApiController
     public function update(UpdateProfileRequest $request)
     {
         $validated = $request->validated();
-        $user = $this->userService->updateUser(auth()->user()->id, $validated);
+        $user = $this->userService->updateUser(auth()->id(), $validated);
         return $this->sendResponse(UserResource::make($user));
     }
 
     public function updatePassword(ResetPasswordRequest $request)
     {
         $validated = $request->validated();
-        $user = $this->userService->updateUser(auth()->user()->id, $validated);
+        $user = $this->userService->updateUser(auth()->id(), $validated);
         return $this->sendResponse(['message' => __('auth.reset_password')]);
     }
 

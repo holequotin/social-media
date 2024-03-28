@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Post;
 use App\Repositories\Post\PostRepositoryInterface;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class PostService
 {
@@ -17,7 +18,7 @@ class PostService
 
     public function createPost($data)
     {
-        $data['user_id'] = auth()->user()->id;
+        $data['user_id'] = auth()->id();
         return $this->postRepository->create($data);
     }
 
@@ -35,7 +36,7 @@ class PostService
             $urls = $this->fileService->storeImage('posts/'.$postId, $validated['images']);
             DB::commit();
             return $this->postRepository->update($postId, $validated);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
             throw $th;
         }
@@ -58,7 +59,7 @@ class PostService
             $this->postImageService->deletePostImagesByPost($post->id);
             $this->postRepository->delete($post->id);
             DB::commit();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             DB::rollBack();
             throw $th;
         }

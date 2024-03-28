@@ -13,7 +13,7 @@ class FriendshipService
 
     public function storeFriendRequest($validated)
     {
-        $validated['from_user_id'] = auth()->user()->id;
+        $validated['from_user_id'] = auth()->id();
         return $this->friendshipRepository->create($validated);
     }
 
@@ -32,7 +32,7 @@ class FriendshipService
 
     public function unfriend($validated)
     {
-        return $this->friendshipRepository->deleteFriendship(auth()->user()->id, $validated['friend_id']);
+        return $this->friendshipRepository->deleteFriendship(auth()->id(), $validated['friend_id']);
     }
 
     public function getFriendship($userId, $friendId)

@@ -5,6 +5,7 @@ namespace App\Rules;
 use App\Repositories\Friendship\FriendshipRepositoryInterface;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Translation\PotentiallyTranslatedString;
 
 class CheckFriendshipRule implements ValidationRule
 {
@@ -13,11 +14,11 @@ class CheckFriendshipRule implements ValidationRule
     /**
      * Run the validation rule.
      *
-     * @param  \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
+     * @param Closure(string): PotentiallyTranslatedString $fail
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $friendship = $this->friendshipRepository->getFriendship(auth()->user()->id, $value);
+        $friendship = $this->friendshipRepository->getFriendship(auth()->id(), $value);
         if(!$friendship){
             $fail(__('common.friendship.not_exist'));
         }

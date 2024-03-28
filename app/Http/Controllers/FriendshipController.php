@@ -37,7 +37,7 @@ class FriendshipController extends BaseApiController
     {
         $this->authorize('accept',$friendship);
         $friendship = $this->friendshipService->acceptFriendRequest($friendship);
-    
+
         return $this->sendResponse(['friendship' => FriendshipResource::make($friendship)]);
     }
 
@@ -50,7 +50,7 @@ class FriendshipController extends BaseApiController
 
     public function getFriendship(Request $request, User $user)
     {
-        $friendship = $this->friendshipService->getFriendship(auth()->user()->id, $user->id);
+        $friendship = $this->friendshipService->getFriendship(auth()->id(), $user->id);
         if($friendship) return $this->sendResponse(FriendshipResource::make($friendship));
         return $this->sendError(["message" => "Friendship not found"], Response::HTTP_NOT_FOUND);
     }
@@ -58,7 +58,7 @@ class FriendshipController extends BaseApiController
     public function getFriendRequest(Request $request)
     {
         $perPage = $request->perPage;
-        $friendships = $this->friendshipService->getFriendRequest(auth()->user()->id)->paginate($perPage);
+        $friendships = $this->friendshipService->getFriendRequest(auth()->id())->paginate($perPage);
         return $this->sendResponse(FriendshipResource::collection($friendships));
     }
 }

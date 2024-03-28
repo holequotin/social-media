@@ -21,7 +21,8 @@ class PostController extends BaseApiController
         protected PostService $postService,
         protected FileService $fileService,
         protected PostImageService $postImageService
-    ) {
+    )
+    {
     }
 
     /**
@@ -31,7 +32,7 @@ class PostController extends BaseApiController
     {
         $perPage = $request->get('perPage');
         $posts = $this->postService->getPosts()->paginate($perPage);
-        return $this->sendResponse(PostResource::collection($posts),Response::HTTP_OK);
+        return $this->sendResponse(PostResource::collection($posts));
     }
 
     /**
@@ -64,7 +65,7 @@ class PostController extends BaseApiController
     {
         $this->authorize('show', $post);
         $post->load(['user']);
-        return $this->sendResponse(PostResource::make($post), Response::HTTP_OK);
+        return $this->sendResponse(PostResource::make($post));
     }
 
     /**
@@ -81,7 +82,7 @@ class PostController extends BaseApiController
             return $this->sendResponse([
                 "message" => __('common.update.success', ['model' => 'post']),
                 "post" => PostResource::make($post)
-            ], Response::HTTP_OK);
+            ]);
         } catch (Throwable $th) {
             Log::error($th);
             return $this->sendError(['error' => $th->getMessage()]);
@@ -105,7 +106,7 @@ class PostController extends BaseApiController
         }
     }
 
-    public function getPostsByUser(Request $request,User $user)
+    public function getPostsByUser(Request $request, User $user)
     {
         $perPage = $request->perPage;
         $posts = $this->postService->getPostsByUser($user)->paginate($perPage);
