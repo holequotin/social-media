@@ -11,7 +11,7 @@ class ReactionService
 
     public function createReaction($data)
     {
-        $data['user_id'] = auth()->user()->id;
+        $data['user_id'] = auth()->id();
         return $this->reactionRepository->create($data);
     }
 

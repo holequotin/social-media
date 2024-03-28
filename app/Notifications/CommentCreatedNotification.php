@@ -63,7 +63,8 @@ class CommentCreatedNotification extends Notification implements ShouldQueue
     {
         return new BroadcastMessage([
             'post_id' => $this->comment->post_id,
-            'comment_id' => $this->comment->id
+            'comment_id' => $this->comment->id,
+            'body' => $this->comment->body
         ]);
     }
 

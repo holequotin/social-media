@@ -36,10 +36,10 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         $posts = Post::where('type', PostType::PUBLIC)
             ->orWhere(function ($query) use ($friends) {
                 $query->where('type', PostType::FRIENDS)
-                    ->whereIn('user_id', $friends);
+                    ->whereIn('user_id', [...$friends, auth()->id()]);
             })->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions']);
         return $posts;
-    }   
+    }
 
     public function getPostsByUser($user)
     {
@@ -48,10 +48,13 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         }
         $query = $this->getModel()::where('user_id', $user->id)
             ->where('type', PostType::PUBLIC);
-        if($user->checkIsFriend(auth()->user()))
+        if ($user->checkIsFriend(auth()->id()))
         {
-            $query = $query->orWhere('type', PostType::FRIENDS);
+            $query = $query->orWhere(function($query) use ($user) {
+                return $query->where('user_id', $user->id)
+                            ->where('type', PostType::FRIENDS);
+            });
         }
-        return $query->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions']);;
+        return $query->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions']);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Friendship;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SendFriendRequest extends FormRequest
@@ -17,7 +18,7 @@ class SendFriendRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -25,8 +26,8 @@ class SendFriendRequest extends FormRequest
             'to_user_id' => [
                 'required',
                 'exists:users,id',
-                'unique:friendships,to_user_id,NULL,id,from_user_id,'.auth()->user()->id,
-                'unique:friendships,from_user_id,NULL,id,to_user_id,'.auth()->user()->id,
+                'unique:friendships,to_user_id,NULL,id,from_user_id,' . auth()->id(),
+                'unique:friendships,from_user_id,NULL,id,to_user_id,' . auth()->id(),
             ]
         ];
     }
