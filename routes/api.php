@@ -44,12 +44,13 @@ Route::group(['middleware' => 'api'], function () {
         ], function () {
             Route::get('/', [PostController::class, 'index'])->name('index');
             Route::post('/', [PostController::class, 'store'])->name('store');
+            Route::get('/{post}', [PostController::class, 'show'])->name('show');
             Route::patch('/{post}', [PostController::class, 'update'])->name('update');
             Route::delete('/{post}', [PostController::class, 'destroy'])->name('destroy');
             Route::get('/{post}/comments', [CommentController::class, 'getCommentsByPost'])->name('comments');
             Route::get('/{post}/reactions', [ReactionController::class,'getReactionsByPost'])->name('reactions');
         });
-    
+
         Route::group([
             'prefix' => 'comments',
             'as' => 'comments.'
@@ -59,7 +60,7 @@ Route::group(['middleware' => 'api'], function () {
             Route::patch('/{comment}', [CommentController::class, 'update'])->name('update');
             Route::delete('/{comment}', [CommentController::class, 'destroy'])->name('destroy');
         });
-    
+
         Route::group([
             'prefix' => 'reactions',
             'as' => 'reactions.'
@@ -69,7 +70,7 @@ Route::group(['middleware' => 'api'], function () {
             Route::patch('/{reaction}', [ReactionController::class, 'update'])->name('update');
             Route::delete('/{reaction}', [ReactionController::class, 'destroy'])->name('destroy');
         });
-    
+
         Route::group([
             'prefix' => 'notifications',
             'as' => 'notifications.'

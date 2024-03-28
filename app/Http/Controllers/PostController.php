@@ -13,6 +13,7 @@ use App\Services\PostService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class PostController extends BaseApiController
 {
@@ -49,7 +50,7 @@ class PostController extends BaseApiController
                 "message" => __('common.create.success', ['model' => 'post']),
                 "post" => PostResource::make($post)
             ], Response::HTTP_CREATED);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Log::error($th);
 
             return $this->sendError(['error' => $th->getMessage()]);
@@ -61,11 +62,9 @@ class PostController extends BaseApiController
      */
     public function show(Post $post)
     {
-        $post = $this->postService->getPostById($post->id);
-
-        return $this->sendResponse([
-            'post' => PostResource::make($post)
-        ], Response::HTTP_OK);
+        $this->authorize('show', $post);
+        $post->load(['user']);
+        return $this->sendResponse(PostResource::make($post), Response::HTTP_OK);
     }
 
     /**
@@ -83,7 +82,7 @@ class PostController extends BaseApiController
                 "message" => __('common.update.success', ['model' => 'post']),
                 "post" => PostResource::make($post)
             ], Response::HTTP_OK);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Log::error($th);
             return $this->sendError(['error' => $th->getMessage()]);
         }
@@ -100,7 +99,7 @@ class PostController extends BaseApiController
             return $this->sendResponse([
                 "message" => __('common.delete.success', ['model' => 'post']),
             ]);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Log::error($th);
             return $this->sendError(['error' => $th->getMessage()]);
         }
