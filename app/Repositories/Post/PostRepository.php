@@ -22,7 +22,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
 
     public function find($postId)
     {
-        return $this->getModel()::with('images')->findOrFail($postId);
+        return $this->getModel()::with(['images', 'user'])->findOrFail($postId);
     }
 
     public function paginate($perPage = 10)

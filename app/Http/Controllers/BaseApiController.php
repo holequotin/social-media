@@ -16,6 +16,11 @@ class BaseApiController extends Controller
         return $this->response($error,$status);
     }
 
+    public function sendPaginateResponse($data = [], $meta = [], $status = Response::HTTP_OK)
+    {
+        return $this->sendResponse($data->additional(['meta' => $meta])->response()->getData(true), $status);
+    }
+
     private function response($data = [], $status)
     {
         return response()->json($data,$status);

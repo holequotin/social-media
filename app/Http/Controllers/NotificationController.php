@@ -18,7 +18,10 @@ class NotificationController extends BaseApiController
         $perPage = $request->perPage;
         $type = $request->type;
         $notifications = $this->notificationService->getNotificationByUser(auth()->user(), $type)->paginate($perPage);
-        return $this->sendResponse(NotificationResource::collection($notifications));
+        $addedData = [
+            "unread_count" => $this->notificationService->getUnreadNotificationCount(auth()->user()),
+        ];
+        return $this->sendPaginateResponse(NotificationResource::collection($notifications), $addedData);
     }
 
     public function markAsRead(Request $request, DatabaseNotification $notification)
