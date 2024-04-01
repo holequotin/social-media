@@ -77,6 +77,7 @@ Route::group(['middleware' => 'api'], function () {
         ], function ($router) {
             Route::get('/', [NotificationController::class, 'index'])->name('index');
             Route::patch('/{notification}', [NotificationController::class, 'markAsRead'])->name('markAsRead');
+            Route::patch('/', [NotificationController::class, 'markAllAsRead'])->name('markAllAsRead');
         });
 
         Route::group([

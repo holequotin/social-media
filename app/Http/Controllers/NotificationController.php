@@ -33,4 +33,12 @@ class NotificationController extends BaseApiController
             'notification' => NotificationResource::make($notification)
         ]);
     }
+
+    public function markAllAsRead(Request $request)
+    {
+        $this->notificationService->markAllAsRead(auth()->user());
+        return $this->sendResponse([
+            'message' => __('common.notification.mark_all_as_read'),
+        ]);
+    }
 }

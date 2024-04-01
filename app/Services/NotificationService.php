@@ -28,4 +28,9 @@ class NotificationService
     {
         return $this->notificationRepository->getUnreadNotificationCount($user);
     }
+
+    public function markAllAsRead($user)
+    {
+        $user->unreadNotifications->markAsRead();
+    }
 }
