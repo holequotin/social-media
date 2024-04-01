@@ -64,4 +64,10 @@ class PostService
             throw $th;
         }
     }
+
+    public function sharePost($validated)
+    {
+        $validated['user_id'] = auth()->id();
+        return $this->postRepository->create($validated);
+    }
 }

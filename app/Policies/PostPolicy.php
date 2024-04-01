@@ -34,4 +34,9 @@ class PostPolicy
 
         return $isOwner || $isPublic || $isFriend;
     }
+
+    public function share(User $user, Post $post)
+    {
+        return $this->show($user, $post);
+    }
 }

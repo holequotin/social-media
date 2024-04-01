@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Post\SharePostRequest;
 use App\Http\Requests\Post\StorePostRequest;
 use App\Http\Requests\Post\UpdatePostRequest;
 use App\Http\Resources\PostResource;
@@ -111,5 +112,16 @@ class PostController extends BaseApiController
         $perPage = $request->perPage;
         $posts = $this->postService->getPostsByUser($user)->paginate($perPage);
         return $this->sendPaginateResponse(PostResource::collection($posts));
+    }
+
+    public function share(SharePostRequest $request)
+    {
+        $validated = $request->validated();
+        $post = $this->postService->getPostById($validated['shared_post_id']);
+        $this->authorize('share', $post);
+        $newPost = $this->postService->sharePost($validated);
+        $newPost->load(['user', 'sharedPost']);
+
+        return $this->sendResponse(PostResource::make($newPost));
     }
 }

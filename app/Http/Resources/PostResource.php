@@ -23,7 +23,8 @@ class PostResource extends JsonResource
             'current_reaction' => ReactionResource::make($this->reactions()->where('user_id', auth()->id())->first()),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'user' => UserResource::make($this->whenLoaded('user'))
+            'user' => UserResource::make($this->whenLoaded('user')),
+            'shared_post' => PostResource::make($this->whenLoaded('sharedPost')),
         ];
     }
 }

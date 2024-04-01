@@ -44,6 +44,7 @@ Route::group(['middleware' => 'api'], function () {
         ], function () {
             Route::get('/', [PostController::class, 'index'])->name('index');
             Route::post('/', [PostController::class, 'store'])->name('store');
+            Route::post('/share', [PostController::class, 'share'])->name('share');
             Route::get('/{post}', [PostController::class, 'show'])->name('show');
             Route::patch('/{post}', [PostController::class, 'update'])->name('update');
             Route::delete('/{post}', [PostController::class, 'destroy'])->name('destroy');
