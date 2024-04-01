@@ -32,7 +32,7 @@ class PostController extends BaseApiController
     {
         $perPage = $request->get('perPage');
         $posts = $this->postService->getPosts()->paginate($perPage);
-        return $this->sendResponse(PostResource::collection($posts));
+        return $this->sendPaginateResponse(PostResource::collection($posts));
     }
 
     /**
@@ -110,6 +110,6 @@ class PostController extends BaseApiController
     {
         $perPage = $request->perPage;
         $posts = $this->postService->getPostsByUser($user)->paginate($perPage);
-        return $this->sendResponse(PostResource::collection($posts));
+        return $this->sendPaginateResponse(PostResource::collection($posts));
     }
 }

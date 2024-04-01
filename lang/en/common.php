@@ -20,7 +20,8 @@ return [
         'existed' => 'Reaction already exists',
     ],
     'notification' => [
-        'mark_as_read' => 'Marked notifications as read'
+        'mark_as_read' => 'Marked notifications as read',
+        'mark_all_as_read' => 'Marked all notifications as read'
     ],
     'friendship' => [
         'not_exist' => 'Friendship does not exist',

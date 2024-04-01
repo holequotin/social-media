@@ -2,11 +2,13 @@
 namespace App\Services;
 
 use App\Enums\NotificationStatus;
+use App\Repositories\Notification\NotificationRepositoryInterface;
 use Illuminate\Notifications\DatabaseNotification;
 
 class NotificationService
 {
-    public function __construct() {
+    public function __construct(protected NotificationRepositoryInterface $notificationRepository)
+    {
 
     }
 
@@ -20,5 +22,15 @@ class NotificationService
             default:
                 return $user->notifications();
         }
+    }
+
+    public function getUnreadNotificationCount($user)
+    {
+        return $this->notificationRepository->getUnreadNotificationCount($user);
+    }
+
+    public function markAllAsRead($user)
+    {
+        $user->unreadNotifications->markAsRead();
     }
 }
