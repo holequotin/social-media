@@ -54,4 +54,9 @@ class UserService
             $this->fileService->deleteImage($paths->all());
         }
     }
+
+    public function searchUserByName($name)
+    {
+        return $this->userRepository->getUserByName($name);
+    }
 }

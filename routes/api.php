@@ -95,6 +95,7 @@ Route::group(['middleware' => 'api'], function () {
             'prefix' => 'users',
             'as' => 'users.'
         ],function() {
+            Route::get('/', [UserController::class, 'search'])->name('search');
             Route::get('/{user}/friends', [FriendshipController::class,'getFriendsByUser'])->name('friends');
             Route::get('/{user}/posts',[PostController::class,'getPostsByUser'])->name('posts');
             Route::get('/{user}',[UserController::class,'show'])->name('show');
