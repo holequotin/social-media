@@ -6,10 +6,12 @@ namespace App\Providers;
 
 use App\Models\Comment;
 use App\Models\Friendship;
+use App\Models\Group;
 use App\Models\Post;
 use App\Models\Reaction;
 use App\Policies\CommentPolicy;
 use App\Policies\FriendshipPolicy;
+use App\Policies\GroupPolicy;
 use App\Policies\NotificationPolicy;
 use App\Policies\PostPolicy;
 use App\Policies\ReactionPolicy;
@@ -29,7 +31,8 @@ class AuthServiceProvider extends ServiceProvider
         Comment::class => CommentPolicy::class,
         Reaction::class => ReactionPolicy::class,
         DatabaseNotification::class => NotificationPolicy::class,
-        Friendship::class => FriendshipPolicy::class
+        Friendship::class => FriendshipPolicy::class,
+        Group::class => GroupPolicy::class,
     ];
 
     /**
