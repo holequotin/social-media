@@ -25,13 +25,14 @@ class ReactionRepository extends BaseRepository implements ReactionRepositoryInt
             ->first();
     }
 
-    public function getReactionsByPost($postId, $type)
+    public function getReactionsByPost($postId, $type, $perPage)
     {
         if ($type) {
             return $this->getModel()::where('post_id', $postId)
                 ->where('type', $type)
-                ->with(['user']);
+                ->with(['user'])
+                ->paginate($perPage);
         }
-        return $this->getModel()::where('post_id', $postId)->with(['user']);
+        return $this->getModel()::where('post_id', $postId)->with(['user'])->paginate($perPage);
     }
 }

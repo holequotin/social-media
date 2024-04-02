@@ -1,9 +1,7 @@
 <?php
 namespace App\Services;
 
-use App\Enums\NotificationStatus;
 use App\Repositories\Notification\NotificationRepositoryInterface;
-use Illuminate\Notifications\DatabaseNotification;
 
 class NotificationService
 {
@@ -12,16 +10,9 @@ class NotificationService
 
     }
 
-    public function getNotificationByUser($user, $type = 'all')
+    public function getNotificationByUser($user, $type = 'all', $perPage = 15)
     {
-        switch ($type) {
-            case NotificationStatus::READ:
-                return DatabaseNotification::where('read_at','<>',null);
-            case NotificationStatus::NOT_READ:
-                return $user->unreadNotifications();
-            default:
-                return $user->notifications();
-        }
+        return $this->notificationRepository->getNotificationByUser($user, $type, $perPage);
     }
 
     public function getUnreadNotificationCount($user)

@@ -44,6 +44,7 @@ Route::group(['middleware' => 'api'], function () {
         ], function () {
             Route::get('/', [PostController::class, 'index'])->name('index');
             Route::post('/', [PostController::class, 'store'])->name('store');
+            Route::post('/share', [PostController::class, 'share'])->name('share');
             Route::get('/{post}', [PostController::class, 'show'])->name('show');
             Route::patch('/{post}', [PostController::class, 'update'])->name('update');
             Route::delete('/{post}', [PostController::class, 'destroy'])->name('destroy');
@@ -95,6 +96,7 @@ Route::group(['middleware' => 'api'], function () {
             'prefix' => 'users',
             'as' => 'users.'
         ],function() {
+            Route::get('/', [UserController::class, 'search'])->name('search');
             Route::get('/{user}/friends', [FriendshipController::class,'getFriendsByUser'])->name('friends');
             Route::get('/{user}/posts',[PostController::class,'getPostsByUser'])->name('posts');
             Route::get('/{user}',[UserController::class,'show'])->name('show');

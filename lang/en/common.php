@@ -14,7 +14,8 @@ return [
         'images' => [
             'max' => 'Each post only has a maximum of :max images',
             'invalid' => 'Invalid delete image'
-        ]
+        ],
+        'max_share_level' => 'Maximum number of posts allowed :max shares level',
     ],
     'reaction' => [
         'existed' => 'Reaction already exists',

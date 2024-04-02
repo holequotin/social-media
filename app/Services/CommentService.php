@@ -65,8 +65,8 @@ class CommentService
         }
     }
 
-    public function getCommentsByPost(Post $post)
+    public function getCommentsByPost(Post $post, $perPage = 15)
     {
-        return $this->commentRepository->getCommentsByPost($post);
+        return $this->commentRepository->getCommentsByPost($post, $perPage);
     }
 }

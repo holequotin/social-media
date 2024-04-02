@@ -8,6 +8,7 @@ use App\Http\Requests\User\UploadAvatarRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\UserService;
+use Illuminate\Http\Request;
 
 class UserController extends BaseApiController
 {
@@ -39,5 +40,14 @@ class UserController extends BaseApiController
         $user = $this->userService->uploadAvatar(auth()->user(), $validated);
 
         return $this->sendResponse(UserResource::make($user));
+    }
+
+    public function search(Request $request)
+    {
+        $name = $request->name;
+        $perPage = $request->perPage;
+        $users = $this->userService->searchUserByName($name, $perPage);
+
+        return $this->sendPaginateResponse(UserResource::collection($users));
     }
 }
