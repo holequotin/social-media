@@ -25,9 +25,9 @@ class FriendshipService
         return $friendship;
     }
 
-    public function getFriendsByUser($user)
+    public function getFriendsByUser($user, $perPage = 15)
     {
-        return $this->friendshipRepository->getFriendsByUser($user);
+        return $this->friendshipRepository->getFriendsByUser($user, $perPage);
     }
 
     public function unfriend($validated)
@@ -40,8 +40,8 @@ class FriendshipService
         return $this->friendshipRepository->getFriendship($userId, $friendId);
     }
 
-    public function getFriendRequest($userId)
+    public function getFriendRequest($userId, $perPage = 15)
     {
-        return $this->friendshipRepository->getFriendRequest($userId);
+        return $this->friendshipRepository->getFriendRequest($userId, $perPage);
     }
 }

@@ -12,9 +12,10 @@ use App\Services\FileService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class CommentController extends BaseApiController
-{   
+{
     public function __construct(
         protected CommentService $commentService,
         protected FileService $fileService
@@ -40,7 +41,7 @@ class CommentController extends BaseApiController
                 'message' => __('common.create.success', ['model' => 'comment']),
                 'comment' => CommentResource::make($comment)
             ]);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Log::error($th);
             return $this->sendError(['error' => $th->getMessage()]);
         }
@@ -66,7 +67,7 @@ class CommentController extends BaseApiController
                 "message" => __('common.update.success', ['model' => 'comment']),
                 "comment" => CommentResource::make($comment)
             ], Response::HTTP_OK);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Log::error($th);
             return $this->sendError(['error' => $th->getMessage()]);
         }
@@ -84,7 +85,7 @@ class CommentController extends BaseApiController
             return $this->sendResponse([
                 'message' => __('common.delete.success', ['model' => 'comment'])
             ]);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Log::error($th);
             return $this->sendError($th->getMessage());
         }
@@ -93,7 +94,7 @@ class CommentController extends BaseApiController
     public function getCommentsByPost(Request $request, Post $post)
     {
         $perPage = $request->perPage;
-        $comments = $this->commentService->getCommentsByPost($post)->paginate($perPage);
-        return $this->sendResponse(CommentResource::collection($comments));
+        $comments = $this->commentService->getCommentsByPost($post, $perPage);
+        return $this->sendPaginateResponse(CommentResource::collection($comments));
     }
 }

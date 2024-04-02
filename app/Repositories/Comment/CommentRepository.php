@@ -12,8 +12,8 @@ class CommentRepository extends BaseRepository implements CommentRepositoryInter
         return Comment::class;
     }
 
-    public function getCommentsByPost(Post $post)
+    public function getCommentsByPost(Post $post, $perPage)
     {
-        return $this->getModel()::where('post_id', $post->id)->orderBy('created_at','desc')->with('user');
+        return $this->getModel()::where('post_id', $post->id)->orderBy('created_at', 'desc')->with('user')->paginate($perPage);
     }
 }

@@ -13,11 +13,11 @@ class FriendshipRepository extends BaseRepository implements FriendshipRepositor
         return Friendship::class;
     }
 
-    public function getFriendsByUser($user)
+    public function getFriendsByUser($user, $perPage)
     {
         $send_friends = $user->friends()->where('status', FriendshipStatus::ACCEPTED)->getQuery()->select('users.*');
         $be_send_friends = $user->isFriends()->where('status', FriendshipStatus::ACCEPTED)->getQuery()->select('users.*');
-        return $send_friends->union($be_send_friends);
+        return $send_friends->union($be_send_friends)->paginate($perPage);
     }
 
     public function getFriendship($userId, $friendId)
@@ -37,10 +37,11 @@ class FriendshipRepository extends BaseRepository implements FriendshipRepositor
         return $this->getFriendship($userId, $friendId)->delete();
     }
 
-    public function getFriendRequest($userId)
+    public function getFriendRequest($userId, $perPage)
     {
         return $this->getModel()::where('to_user_id', $userId)
             ->where('status', FriendshipStatus::PENDING)
-            ->with(['fromUser']);
+            ->with(['fromUser'])
+            ->paginate($perPage);
     }
 }

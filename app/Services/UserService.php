@@ -55,8 +55,8 @@ class UserService
         }
     }
 
-    public function searchUserByName($name)
+    public function searchUserByName($name, $perPage = 15)
     {
-        return $this->userRepository->getUserByName($name);
+        return $this->userRepository->getUserByName($name, $perPage);
     }
 }

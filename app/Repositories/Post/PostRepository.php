@@ -30,21 +30,23 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         return $this->getModel()::with('images')->paginate($perPage);
     }
 
-    public function getPosts()
+    public function getPosts($perPage)
     {
         $friends = $this->friendshipRepository->getFriendsByUser(auth()->user())->pluck('id')->all();
         $posts = Post::where('type', PostType::PUBLIC)
             ->orWhere(function ($query) use ($friends) {
                 $query->where('type', PostType::FRIENDS)
                     ->whereIn('user_id', [...$friends, auth()->id()]);
-            })->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions', 'sharedPost']);
+            })->orderBy('created_at', 'desc')
+            ->with(['user', 'images', 'reactions', 'sharedPost'])
+            ->paginate($perPage);
         return $posts;
     }
 
-    public function getPostsByUser($user)
+    public function getPostsByUser($user, $perPage)
     {
         if ($user->is(auth()->user())) {
-            return $this->getModel()::where('user_id', $user->id)->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions', 'sharedPost']);
+            return $this->getModel()::where('user_id', $user->id)->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions', 'sharedPost'])->paginate($perPage);
         }
         $query = $this->getModel()::where('user_id', $user->id)
             ->where('type', PostType::PUBLIC);
@@ -55,6 +57,6 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
                             ->where('type', PostType::FRIENDS);
             });
         }
-        return $query->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions', 'sharedPost']);
+        return $query->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions', 'sharedPost'])->paginate($perPage);
     }
 }

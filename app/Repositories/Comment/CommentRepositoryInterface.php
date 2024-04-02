@@ -6,5 +6,5 @@ use App\Repositories\RepositoryInterface;
 
 interface CommentRepositoryInterface extends RepositoryInterface
 {
-    public function getCommentsByPost(Post $post);
+    public function getCommentsByPost(Post $post, $perPage);
 }

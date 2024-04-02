@@ -46,7 +46,7 @@ class UserController extends BaseApiController
     {
         $name = $request->name;
         $perPage = $request->perPage;
-        $users = $this->userService->searchUserByName($name)->paginate($perPage);
+        $users = $this->userService->searchUserByName($name, $perPage);
 
         return $this->sendPaginateResponse(UserResource::collection($users));
     }

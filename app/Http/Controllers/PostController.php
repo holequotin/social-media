@@ -31,8 +31,8 @@ class PostController extends BaseApiController
      */
     public function index(Request $request)
     {
-        $perPage = $request->get('perPage');
-        $posts = $this->postService->getPosts()->paginate($perPage);
+        $perPage = $request->perPage;
+        $posts = $this->postService->getPosts($perPage);
         return $this->sendPaginateResponse(PostResource::collection($posts));
     }
 
@@ -110,7 +110,7 @@ class PostController extends BaseApiController
     public function getPostsByUser(Request $request, User $user)
     {
         $perPage = $request->perPage;
-        $posts = $this->postService->getPostsByUser($user)->paginate($perPage);
+        $posts = $this->postService->getPostsByUser($user, $perPage);
         return $this->sendPaginateResponse(PostResource::collection($posts));
     }
 
@@ -120,7 +120,6 @@ class PostController extends BaseApiController
         $post = $this->postService->getPostById($validated['shared_post_id']);
         $this->authorize('share', $post);
         $newPost = $this->postService->sharePost($validated);
-        $newPost->load(['user', 'sharedPost']);
 
         return $this->sendResponse(PostResource::make($newPost));
     }

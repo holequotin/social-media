@@ -10,6 +10,7 @@ use App\Models\Reaction;
 use App\Services\ReactionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class ReactionController extends BaseApiController
 {
@@ -58,7 +59,7 @@ class ReactionController extends BaseApiController
         return $this->sendResponse([
             'message' => __('common.update.success', ['model' => 'reaction']),
             'reaction' => ReactionResource::make($reaction)
-        ],);
+        ]);
     }
 
     /**
@@ -72,7 +73,7 @@ class ReactionController extends BaseApiController
             return $this->sendResponse([
                 'message' => __('common.delete.success', ['model' => 'reaction'])
             ]);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Log::error($th);
             return $this->sendError(['error' => $th->getMessage()]);
         }
@@ -83,8 +84,8 @@ class ReactionController extends BaseApiController
         $type = $request->type;
         $perPage = $request->perPage;
 
-        $reactions = $this->reactionService->getReactionsByPost($post->id, $type)->paginate($perPage);
+        $reactions = $this->reactionService->getReactionsByPost($post->id, $type, $perPage);
 
-        return $this->sendResponse(ReactionResource::collection($reactions));
+        return $this->sendPaginateResponse(ReactionResource::collection($reactions));
     }
 }

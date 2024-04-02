@@ -25,8 +25,8 @@ class ReactionService
         return $this->reactionRepository->delete($id);
     }
 
-    public function getReactionsByPost($postId, $type)
+    public function getReactionsByPost($postId, $type, $perPage = 15)
     {
-        return $this->reactionRepository->getReactionsByPost($postId, $type);
+        return $this->reactionRepository->getReactionsByPost($postId, $type, $perPage);
     }
 }

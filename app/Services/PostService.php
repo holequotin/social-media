@@ -42,14 +42,14 @@ class PostService
         }
     }
 
-    public function getPosts()
+    public function getPosts($perPage = 15)
     {
-        return $this->postRepository->getPosts();
+        return $this->postRepository->getPosts($perPage);
     }
 
-    public function getPostsByUser($user)
+    public function getPostsByUser($user, $perPage = 15)
     {
-        return $this->postRepository->getPostsByUser($user);
+        return $this->postRepository->getPostsByUser($user, $perPage);
     }
 
     public function deletePost(Post $post)
@@ -68,6 +68,9 @@ class PostService
     public function sharePost($validated)
     {
         $validated['user_id'] = auth()->id();
-        return $this->postRepository->create($validated);
+        $post = $this->postRepository->create($validated);
+        $post->load(['user', 'sharedPost']);
+
+        return $post;
     }
 }

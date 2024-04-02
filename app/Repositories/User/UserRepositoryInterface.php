@@ -7,5 +7,5 @@ interface UserRepositoryInterface extends RepositoryInterface
 {
     public function getUserByEmail($email);
 
-    public function getUserByName($name);
+    public function getUserByName($name, $perPage);
 }
