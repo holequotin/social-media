@@ -3,11 +3,17 @@
 namespace App\Http\Requests\Post;
 
 use App\Enums\PostType;
+use App\Repositories\Post\PostRepositoryInterface;
+use App\Rules\NestedLevel;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SharePostRequest extends FormRequest
 {
+    public function __construct(protected PostRepositoryInterface $postRepository)
+    {
+        parent::__construct();
+    }
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -26,7 +32,7 @@ class SharePostRequest extends FormRequest
         return [
             'body' => ['string'],
             'type' => ['string', 'required', 'in:' . implode(',', PostType::getValues())],
-            'shared_post_id' => ['required', 'unique:posts,shared_post_id,NULL,id,user_id,' . auth()->id()],
+            'shared_post_id' => ['required', 'unique:posts,shared_post_id,NULL,id,user_id,' . auth()->id(), new NestedLevel($this->postRepository)],
         ];
     }
 }

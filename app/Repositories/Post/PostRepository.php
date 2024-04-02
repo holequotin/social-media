@@ -59,4 +59,10 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         }
         return $query->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions', 'sharedPost'])->paginate($perPage);
     }
+
+    public function getSharedLevel(Post $post)
+    {
+        if ($post->sharedPost == null) return 0;
+        return $this->getSharedLevel($post->sharedPost) + 1;
+    }
 }

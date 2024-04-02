@@ -65,8 +65,8 @@ class PostController extends BaseApiController
     public function show(Post $post)
     {
         $this->authorize('show', $post);
-        $post->load(['user']);
-        return $this->sendResponse(PostResource::make($post));
+        $post->load(['user', 'sharedPost']);
+        return $this->sendResponse(['post' => PostResource::make($post)]);
     }
 
     /**

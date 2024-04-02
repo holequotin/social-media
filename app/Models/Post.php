@@ -46,7 +46,7 @@ class Post extends Model
 
     public function sharedPost(): HasOne
     {
-        return $this->hasOne(Post::class, 'id', 'shared_post_id');
+        return $this->hasOne(Post::class, 'id', 'shared_post_id')->with(['sharedPost', 'user']);
     }
 
     public function beSharedPosts(): BelongsTo
