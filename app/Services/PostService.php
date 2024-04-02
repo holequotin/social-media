@@ -27,15 +27,16 @@ class PostService
         return $this->postRepository->find($postId);
     }
 
-    public function updatePost($postId, $validated)
+    public function updatePost($post, $validated)
     {
+        if (!$post->shared_post_id) $validated['images'] = [];
         try {
             DB::beginTransaction();
-            $this->postImageService->createPostImages($validated['images'], $postId);
+            $this->postImageService->createPostImages($validated['images'], $post->id);
             $this->postImageService->deletePostImagesById($validated['delete_image_id']);
-            $urls = $this->fileService->storeImage('posts/'.$postId, $validated['images']);
+            $urls = $this->fileService->storeImage('posts/' . $post->id, $validated['images']);
             DB::commit();
-            return $this->postRepository->update($postId, $validated);
+            return $this->postRepository->update($post->id, $validated);
         } catch (Throwable $th) {
             DB::rollBack();
             throw $th;
