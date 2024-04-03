@@ -27,5 +27,9 @@ return [
     'friendship' => [
         'not_exist' => 'Friendship does not exist',
         'deleted' => 'Unfriend successfully'
+    ],
+    'group' => [
+        'join_success' => 'Joined group successfully',
+        'leave_success' => 'Leaved group successfully',
     ]
 ];

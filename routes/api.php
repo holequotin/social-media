@@ -111,6 +111,8 @@ Route::group(['middleware' => 'api'], function () {
             'as' => 'groups.'
         ], function () {
             Route::post('/', [GroupController::class, 'store'])->name('store');
+            Route::post('/{group}/join', [GroupController::class, 'joinGroup'])->name('join');
+            Route::post('/{group}/leave', [GroupController::class, 'leaveGroup'])->name('leave');
             Route::patch('/{group}', [GroupController::class, 'update'])->name('update');
             Route::delete('/{group}', [GroupController::class, 'destroy'])->name('destroy');
         });

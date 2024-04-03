@@ -7,6 +7,8 @@ use App\Http\Requests\Group\UpdateGroupRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Group;
 use App\Services\GroupService;
+use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -19,10 +21,14 @@ class GroupController extends BaseApiController
 
     public function store(StoreGroupRequest $request)
     {
-        $validated = $request->validated();
-        $group = $this->groupService->createGroup($validated);
-
-        return $this->sendResponse(GroupResource::make($group), Response::HTTP_CREATED);
+        try {
+            $validated = $request->validated();
+            $group = $this->groupService->createGroup($validated);
+            return $this->sendResponse(GroupResource::make($group), Response::HTTP_CREATED);
+        } catch (Throwable $th) {
+            Log::error($th->getMessage());
+            return $this->sendError(["error" => $th->getMessage()]);
+        }
     }
 
     public function update(UpdateGroupRequest $request, Group $group)
@@ -45,6 +51,28 @@ class GroupController extends BaseApiController
         } catch (Throwable $th) {
             Log::error($th);
             return $this->sendError($th->getMessage());
+        }
+    }
+
+    public function joinGroup(Request $request, Group $group)
+    {
+        try {
+            $this->groupService->joinGroup($group, auth()->user());
+            return $this->sendResponse(['message' => __('common.group.join_success')]);
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
+            return $this->sendError(['error' => $exception->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function leaveGroup(Request $request, Group $group)
+    {
+        try {
+            $this->groupService->leaveGroup($group, auth()->user());
+            return $this->sendResponse(['message' => __('common.group.leave_success')]);
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
+            return $this->sendError(['error' => $exception->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
 }
