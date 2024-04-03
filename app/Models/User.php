@@ -89,4 +89,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(Group::class, 'group_user', 'user_id', 'group_id');
+    }
 }

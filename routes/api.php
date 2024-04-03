@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FriendshipController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReactionController;
@@ -103,6 +104,15 @@ Route::group(['middleware' => 'api'], function () {
             Route::patch('/', [UserController::class, 'update'])->name('update');
             Route::patch('/change_password',[UserController::class,'updatePassword'])->name('changePassword');
             Route::patch('/avatar', [UserController::class, 'uploadAvatar'])->name('uploadAvatar');
+        });
+
+        Route::group([
+            'prefix' => 'groups',
+            'as' => 'groups.'
+        ], function () {
+            Route::post('/', [GroupController::class, 'store'])->name('store');
+            Route::patch('/{group}', [GroupController::class, 'update'])->name('update');
+            Route::delete('/{group}', [GroupController::class, 'destroy'])->name('destroy');
         });
     });
 });

@@ -21,7 +21,7 @@ class CommentService
     {
         $data['user_id'] = auth()->id();
         $data = ImageHelper::addPath($data, 'comments/' . auth()->id(), 'url');
-        return $this->commentRepository->create($data);
+        return $this->commentRepository->create($data)->load(['user']);
     }
 
     public function deleteComment(Comment $comment)
@@ -48,7 +48,7 @@ class CommentService
             $this->deleteImageComment($comment);
             $data = ImageHelper::addPath($data, 'comments/' . auth()->id(), 'url');
         }
-        return $this->commentRepository->update($comment->id,$data);
+        return $this->commentRepository->update($comment->id, $data)->load(['user']);
     }
     /**
      * Delete image of comment

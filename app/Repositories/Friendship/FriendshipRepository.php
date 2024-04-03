@@ -13,7 +13,7 @@ class FriendshipRepository extends BaseRepository implements FriendshipRepositor
         return Friendship::class;
     }
 
-    public function getFriendsByUser($user, $perPage)
+    public function getFriendsByUser($user, $perPage = 15)
     {
         $send_friends = $user->friends()->where('status', FriendshipStatus::ACCEPTED)->getQuery()->select('users.*');
         $be_send_friends = $user->isFriends()->where('status', FriendshipStatus::ACCEPTED)->getQuery()->select('users.*');

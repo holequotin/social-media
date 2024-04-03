@@ -78,7 +78,7 @@ class PostController extends BaseApiController
         $this->authorize('update', $post);
         try {
             $validated = $request->validated();
-            $this->postService->updatePost($post->id, $validated);
+            $this->postService->updatePost($post, $validated);
             $post = $this->postService->getPostById($post->id);
             return $this->sendResponse([
                 "message" => __('common.update.success', ['model' => 'post']),
