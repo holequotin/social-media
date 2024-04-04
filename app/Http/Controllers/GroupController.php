@@ -6,6 +6,7 @@ use App\Http\Requests\Group\StoreGroupRequest;
 use App\Http\Requests\Group\UpdateGroupRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Group;
+use App\Models\User;
 use App\Services\GroupService;
 use Exception;
 use Illuminate\Http\Request;
@@ -70,6 +71,38 @@ class GroupController extends BaseApiController
         try {
             $this->groupService->leaveGroup($group, auth()->user());
             return $this->sendResponse(['message' => __('common.group.leave_success')]);
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
+            return $this->sendError(['error' => $exception->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function requestToJoinGroup(Request $request, Group $group)
+    {
+        try {
+            $this->groupService->requestToJoinGroup($group, auth()->user());
+
+            return $this->sendResponse(['message' => __('common.group.request_success')]);
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
+            return $this->sendError(['error' => $exception->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function acceptToJoinGroup(Request $request, Group $group, User $user)
+    {
+        $this->authorize('acceptUser', [$group, $user]);
+        $this->groupService->acceptUser($group, $user);
+
+        return $this->sendResponse(['message' => __('common.group.accept_success')]);
+    }
+
+    public function removeUserFromGroup(Request $request, Group $group, User $user)
+    {
+        $this->authorize('removeUser', [$group, $user]);
+        try {
+            $this->groupService->leaveGroup($group, $user);
+            return $this->sendResponse(['message' => __('common.group.remove_success')]);
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
             return $this->sendError(['error' => $exception->getMessage()], Response::HTTP_BAD_REQUEST);

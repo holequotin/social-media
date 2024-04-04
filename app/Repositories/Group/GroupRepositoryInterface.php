@@ -9,6 +9,7 @@ use App\Repositories\RepositoryInterface;
 interface GroupRepositoryInterface extends RepositoryInterface
 {
     public function joinGroup(Group $group, User $user);
-
     public function leaveGroup(Group $group, User $user);
+
+    public function requestToJoinGroup(Group $group, User $user);
 }

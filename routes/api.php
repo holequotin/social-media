@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['middleware' => 'api'], function () {
-    Route::group(['prefix' => 'auth'], function() {
+    Route::group(['prefix' => 'auth'], function () {
         Route::post('register', [AuthController::class, 'register']);
         Route::post('login', [AuthController::class, 'login']);
         Route::post('forget_password', [AuthController::class, 'forgetPassword']);
@@ -38,7 +38,7 @@ Route::group(['middleware' => 'api'], function () {
         });
     });
 
-    Route::group(['middleware' => 'auth:api'], function() {
+    Route::group(['middleware' => 'auth:api'], function () {
         Route::group([
             'prefix' => 'posts',
             'as' => 'posts.'
@@ -50,7 +50,7 @@ Route::group(['middleware' => 'api'], function () {
             Route::patch('/{post}', [PostController::class, 'update'])->name('update');
             Route::delete('/{post}', [PostController::class, 'destroy'])->name('destroy');
             Route::get('/{post}/comments', [CommentController::class, 'getCommentsByPost'])->name('comments');
-            Route::get('/{post}/reactions', [ReactionController::class,'getReactionsByPost'])->name('reactions');
+            Route::get('/{post}/reactions', [ReactionController::class, 'getReactionsByPost'])->name('reactions');
         });
 
         Route::group([
@@ -85,24 +85,24 @@ Route::group(['middleware' => 'api'], function () {
         Route::group([
             'prefix' => 'friendships',
             'as' => 'friendships.'
-        ], function() {
+        ], function () {
             Route::post('/', [FriendshipController::class, 'sendFriendRequest'])->name('send');
-            Route::patch('/{friendship}',[FriendshipController::class, 'acceptFriendRequest'])->name('accept');
+            Route::patch('/{friendship}', [FriendshipController::class, 'acceptFriendRequest'])->name('accept');
             Route::post('/delete', [FriendshipController::class, 'unfriend'])->name('unfriend');
-            Route::get('/requests',[FriendshipController::class,'getFriendRequest'])->name('requests');
+            Route::get('/requests', [FriendshipController::class, 'getFriendRequest'])->name('requests');
             Route::get('/{user}', [FriendshipController::class, 'getFriendship']);
         });
 
         Route::group([
             'prefix' => 'users',
             'as' => 'users.'
-        ],function() {
+        ], function () {
             Route::get('/', [UserController::class, 'search'])->name('search');
-            Route::get('/{user}/friends', [FriendshipController::class,'getFriendsByUser'])->name('friends');
-            Route::get('/{user}/posts',[PostController::class,'getPostsByUser'])->name('posts');
-            Route::get('/{user}',[UserController::class,'show'])->name('show');
+            Route::get('/{user}/friends', [FriendshipController::class, 'getFriendsByUser'])->name('friends');
+            Route::get('/{user}/posts', [PostController::class, 'getPostsByUser'])->name('posts');
+            Route::get('/{user}', [UserController::class, 'show'])->name('show');
             Route::patch('/', [UserController::class, 'update'])->name('update');
-            Route::patch('/change_password',[UserController::class,'updatePassword'])->name('changePassword');
+            Route::patch('/change_password', [UserController::class, 'updatePassword'])->name('changePassword');
             Route::patch('/avatar', [UserController::class, 'uploadAvatar'])->name('uploadAvatar');
         });
 
@@ -112,6 +112,9 @@ Route::group(['middleware' => 'api'], function () {
         ], function () {
             Route::post('/', [GroupController::class, 'store'])->name('store');
             Route::post('/{group}/join', [GroupController::class, 'joinGroup'])->name('join');
+            Route::post('/{group}/request', [GroupController::class, 'requestToJoinGroup'])->name('request');
+            Route::delete('/{group}/remove/{user}', [GroupController::class, 'removeUserFromGroup'])->name('remove');
+            Route::patch('/{group}/accept/{user}', [GroupController::class, 'acceptToJoinGroup'])->name('accept');
             Route::post('/{group}/leave', [GroupController::class, 'leaveGroup'])->name('leave');
             Route::patch('/{group}', [GroupController::class, 'update'])->name('update');
             Route::delete('/{group}', [GroupController::class, 'destroy'])->name('destroy');

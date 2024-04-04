@@ -6,6 +6,7 @@ use App\Enums\GroupType;
 use App\Helpers\ImageHelper;
 use App\Models\Group;
 use App\Models\User;
+use App\Notifications\GroupRequestNotification;
 use App\Repositories\Group\GroupRepositoryInterface;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -46,7 +47,7 @@ class GroupService
         return $this->groupRepository->update($group->id, $validated)->load(['owner']);
     }
 
-    public function deleteGroup(Group $group)
+    public function deleteGroup(Group $group): void
     {
         try {
             DB::beginTransaction();
@@ -59,7 +60,7 @@ class GroupService
         }
     }
 
-    public function deleteImageGroup(Group $group)
+    public function deleteImageGroup(Group $group): void
     {
         $paths = collect([$group->url]);
         if ($group->url) {
@@ -67,7 +68,7 @@ class GroupService
         }
     }
 
-    public function joinGroup(Group $group, User $user)
+    public function joinGroup(Group $group, User $user): void
     {
         if ($group->type == GroupType::PRIVATE) {
             throw new Exception(__('exception.group.join_not_allowed'));
@@ -78,11 +79,25 @@ class GroupService
         $this->groupRepository->joinGroup($group, $user);
     }
 
-    public function leaveGroup(Group $group, User $user)
+    public function leaveGroup(Group $group, User $user): void
     {
         if (!$user->groups->contains($group)) {
             throw new Exception(__('exception.group.has_not_joined'));
         }
         $this->groupRepository->leaveGroup($group, $user);
+    }
+
+    public function requestToJoinGroup(Group $group, User $user): void
+    {
+        if (!$group->type == GroupType::PRIVATE) {
+            throw new Exception(__('exception.group.invalid'));
+        }
+        $this->groupRepository->requestToJoinGroup($group, $user);
+        $group->owner->notify(new GroupRequestNotification($group, $user));
+    }
+
+    public function acceptUser(Group $group, User $user)
+    {
+        $this->groupRepository->acceptUser($group, $user);
     }
 }
