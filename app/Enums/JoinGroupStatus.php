@@ -6,6 +6,6 @@ use BenSampo\Enum\Enum;
 
 final class JoinGroupStatus extends Enum
 {
-    const WAITING = 0;
-    const JOINED = 1;
+    const WAITING = "0";
+    const JOINED = "1";
 }

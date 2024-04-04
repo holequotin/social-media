@@ -31,5 +31,8 @@ return [
     'group' => [
         'join_success' => 'Joined group successfully',
         'leave_success' => 'Leaved group successfully',
+        'request_success' => 'Requested to join group successfully',
+        'remove_success' => 'Removed user successfully',
+        'accept_success' => 'Accepted user successfully',
     ]
 ];

@@ -4,8 +4,10 @@ namespace App\Notifications;
 
 use App\Models\Group;
 use App\Models\User;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -50,7 +52,21 @@ class GroupRequestNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'group_id' => $this->group->id,
+            'user_id' => $this->user->id
         ];
+    }
+
+    public function toBroadcast(object $notifiable): BroadcastMessage
+    {
+        return new BroadcastMessage([
+            'group_id' => $this->group->id,
+            'user_id' => $this->user->id
+        ]);
+    }
+
+    public function broadcastOn()
+    {
+        return new PrivateChannel('App.Models.User.' . $this->group->owner->id);
     }
 }
