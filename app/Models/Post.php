@@ -17,7 +17,8 @@ class Post extends Model
         'body',
         'user_id',
         'type',
-        'shared_post_id'
+        'shared_post_id',
+        'group_id'
     ];
 
     protected $attributes = [
@@ -52,5 +53,10 @@ class Post extends Model
     public function beSharedPosts(): BelongsTo
     {
         return $this->belongsTo(Post::class, 'shared_post_id', 'id');
+    }
+
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(Group::class, 'group_id', 'id');
     }
 }

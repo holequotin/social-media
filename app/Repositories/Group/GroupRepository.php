@@ -40,10 +40,7 @@ class GroupRepository extends BaseRepository implements GroupRepositoryInterface
 
     public function acceptUser(Group $group, User $user)
     {
-        $isInWaiting = $user->groups()->wherePivot('group_id', $group->id)
-            ->wherePivot('status', JoinGroupStatus::WAITING)
-            ->exists();
-        if ($isInWaiting) {
+        if ($user->isWaitingAcceptGroup($group)) {
             $user->groups()->updateExistingPivot($group->id, ['status' => JoinGroupStatus::JOINED]);
         }
     }

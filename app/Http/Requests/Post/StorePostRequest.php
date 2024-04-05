@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Post;
 
+use App\Enums\JoinGroupStatus;
 use App\Enums\PostType;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StorePostRequest extends FormRequest
@@ -18,7 +20,7 @@ class StorePostRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -28,6 +30,7 @@ class StorePostRequest extends FormRequest
             'images' => ["required_without:body",'max:4'],
             'images.*' => ['image', 'max:2048'],
             'type' => ['string', 'required', 'in:' . implode(',', PostType::getValues())],
+            'group_id' => ['nullable', 'exists:groups,id', 'exists:group_user,group_id,user_id,' . auth()->id() . ',status,' . JoinGroupStatus::JOINED],
         ];
     }
 }

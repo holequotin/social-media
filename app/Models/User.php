@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\FriendshipStatus;
+use App\Enums\JoinGroupStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -78,6 +79,20 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->friends()->wherePivot('to_user_id', $userId)->wherePivot('status', FriendshipStatus::ACCEPTED)->exists() ||
             $this->isFriends()->wherePivot('from_user_id', $userId)->wherePivot('status', FriendshipStatus::ACCEPTED)->exists();
+    }
+
+    public function isInGroup(Group $group)
+    {
+        return $this->groups()->wherePivot('group_id', $group->id)
+            ->wherePivot('status', JoinGroupStatus::JOINED)
+            ->exists();
+    }
+
+    public function isWaitingAcceptGroup(Group $group)
+    {
+        return $this->groups()->wherePivot('group_id', $group->id)
+            ->wherePivot('status', JoinGroupStatus::WAITING)
+            ->exists();
     }
 
     public function posts(): HasMany
