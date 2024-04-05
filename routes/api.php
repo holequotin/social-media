@@ -100,6 +100,7 @@ Route::group(['middleware' => 'api'], function () {
             Route::get('/', [UserController::class, 'search'])->name('search');
             Route::get('/{user}/friends', [FriendshipController::class, 'getFriendsByUser'])->name('friends');
             Route::get('/{user}/posts', [PostController::class, 'getPostsByUser'])->name('posts');
+            Route::get('/{user}/groups', [GroupController::class, 'getGroupsByUser'])->name('groups');
             Route::get('/{user}', [UserController::class, 'show'])->name('show');
             Route::patch('/', [UserController::class, 'update'])->name('update');
             Route::patch('/change_password', [UserController::class, 'updatePassword'])->name('changePassword');
@@ -110,6 +111,7 @@ Route::group(['middleware' => 'api'], function () {
             'prefix' => 'groups',
             'as' => 'groups.'
         ], function () {
+            Route::get('/{group}/posts', [PostController::class, 'getPostsInGroup'])->name('posts');
             Route::post('/', [GroupController::class, 'store'])->name('store');
             Route::post('/{group}/join', [GroupController::class, 'joinGroup'])->name('join');
             Route::post('/{group}/request', [GroupController::class, 'requestToJoinGroup'])->name('request');

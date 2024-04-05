@@ -39,4 +39,9 @@ class GroupPolicy
                 ->exists();
 
     }
+
+    public function getPosts(User $user, Group $group)
+    {
+        return $user->isInGroup($group);
+    }
 }

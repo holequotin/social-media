@@ -44,4 +44,9 @@ class GroupRepository extends BaseRepository implements GroupRepositoryInterface
             $user->groups()->updateExistingPivot($group->id, ['status' => JoinGroupStatus::JOINED]);
         }
     }
+
+    public function getGroupsByUser(User $user, $perPage)
+    {
+        return $user->groups()->paginate($perPage);
+    }
 }

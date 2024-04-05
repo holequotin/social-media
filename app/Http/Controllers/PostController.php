@@ -6,6 +6,7 @@ use App\Http\Requests\Post\SharePostRequest;
 use App\Http\Requests\Post\StorePostRequest;
 use App\Http\Requests\Post\UpdatePostRequest;
 use App\Http\Resources\PostResource;
+use App\Models\Group;
 use App\Models\Post;
 use App\Models\User;
 use App\Services\FileService;
@@ -111,6 +112,15 @@ class PostController extends BaseApiController
     {
         $perPage = $request->perPage;
         $posts = $this->postService->getPostsByUser($user, $perPage);
+        return $this->sendPaginateResponse(PostResource::collection($posts));
+    }
+
+    public function getPostsInGroup(Request $request, Group $group)
+    {
+        $this->authorize('getPosts', $group);
+        $perPage = $request->perPage;
+        $posts = $this->postService->getPostsInGroup($group, $perPage);
+
         return $this->sendPaginateResponse(PostResource::collection($posts));
     }
 

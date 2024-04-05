@@ -100,4 +100,9 @@ class GroupService
     {
         $this->groupRepository->acceptUser($group, $user);
     }
+
+    public function getGroupsByUser(User $user, $perPage)
+    {
+        return $this->groupRepository->getGroupsByUser($user, $perPage);
+    }
 }

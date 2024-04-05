@@ -108,4 +108,12 @@ class GroupController extends BaseApiController
             return $this->sendError(['error' => $exception->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
+
+    public function getGroupsByUser(Request $request, User $user)
+    {
+        $perPage = $request->perPage;
+        $groups = $this->groupService->getGroupsByUser($user, $perPage);
+
+        return $this->sendPaginateResponse(GroupResource::collection($groups));
+    }
 }
