@@ -23,7 +23,7 @@ class PostPolicy
 
     public function delete(User $user, Post $post)
     {
-        return $user->id == $post->user_id;
+        return $user->id == $post->user_id || $user->is($post->group->owner);
     }
 
     public function show(User $user, Post $post)

@@ -44,4 +44,9 @@ class GroupPolicy
     {
         return $user->isInGroup($group);
     }
+
+    public function getUsers(User $user, Group $group)
+    {
+        return $user->isInGroup($group);
+    }
 }

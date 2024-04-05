@@ -112,6 +112,7 @@ Route::group(['middleware' => 'api'], function () {
             'as' => 'groups.'
         ], function () {
             Route::get('/{group}/posts', [PostController::class, 'getPostsInGroup'])->name('posts');
+            Route::get('/{group}/users', [UserController::class, 'getUsersInGroup'])->name('users');
             Route::post('/', [GroupController::class, 'store'])->name('store');
             Route::post('/{group}/join', [GroupController::class, 'joinGroup'])->name('join');
             Route::post('/{group}/request', [GroupController::class, 'requestToJoinGroup'])->name('request');
