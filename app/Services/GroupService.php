@@ -8,6 +8,7 @@ use App\Models\Group;
 use App\Models\User;
 use App\Notifications\GroupRequestNotification;
 use App\Repositories\Group\GroupRepositoryInterface;
+use App\Repositories\User\UserRepositoryInterface;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -16,7 +17,8 @@ class GroupService
 {
     public function __construct(
         protected GroupRepositoryInterface $groupRepository,
-        protected FileService              $fileService
+        protected FileService             $fileService,
+        protected UserRepositoryInterface $userRepository,
     )
     {
     }
@@ -103,6 +105,6 @@ class GroupService
 
     public function getGroupsByUser(User $user, $perPage)
     {
-        return $this->groupRepository->getGroupsByUser($user, $perPage);
+        return $this->userRepository->getGroupsByUser($user, $perPage);
     }
 }

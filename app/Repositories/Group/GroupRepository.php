@@ -7,9 +7,14 @@ use App\Enums\JoinGroupStatus;
 use App\Models\Group;
 use App\Models\User;
 use App\Repositories\BaseRepository;
+use App\Repositories\User\UserRepositoryInterface;
 
 class GroupRepository extends BaseRepository implements GroupRepositoryInterface
 {
+    public function __construct(protected UserRepositoryInterface $userRepository)
+    {
+        parent::__construct();
+    }
     public function getModel()
     {
         return Group::class;
@@ -22,7 +27,7 @@ class GroupRepository extends BaseRepository implements GroupRepositoryInterface
         }
     }
 
-    public function leaveGroup(Group $grouzp, User $user)
+    public function leaveGroup(Group $group, User $user)
     {
         if ($user->groups->contains($group)) {
             $user->groups()->detach($group->id);
@@ -40,27 +45,8 @@ class GroupRepository extends BaseRepository implements GroupRepositoryInterface
 
     public function acceptUser(Group $group, User $user)
     {
-        if ($this->isWaitingAcceptGroup($group, $user)) {
+        if ($this->userRepository->isWaitingAcceptGroup($group, $user)) {
             $user->groups()->updateExistingPivot($group->id, ['status' => JoinGroupStatus::JOINED]);
         }
-    }
-
-    public function getGroupsByUser(User $user, $perPage)
-    {
-        return $user->groups()->paginate($perPage);
-    }
-
-    public function isInGroup(Group $group, User $user)
-    {
-        return $user->groups()->wherePivot('group_id', $group->id)
-            ->wherePivot('status', JoinGroupStatus::JOINED)
-            ->exists();
-    }
-
-    public function isWaitingAcceptGroup(Group $group, User $user)
-    {
-        return $user->groups()->wherePivot('group_id', $group->id)
-            ->wherePivot('status', JoinGroupStatus::WAITING)
-            ->exists();
     }
 }
