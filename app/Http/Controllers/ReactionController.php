@@ -81,10 +81,7 @@ class ReactionController extends BaseApiController
 
     public function getReactionsByPost(Request $request, Post $post)
     {
-        $type = $request->type;
-        $perPage = $request->perPage;
-
-        $reactions = $this->reactionService->getReactionsByPost($post->id, $type, $perPage);
+        $reactions = $this->reactionService->getReactionsByPost($post->id, $request->type, $request->perPage);
 
         return $this->sendPaginateResponse(ReactionResource::collection($reactions));
     }

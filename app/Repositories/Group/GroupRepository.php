@@ -7,9 +7,14 @@ use App\Enums\JoinGroupStatus;
 use App\Models\Group;
 use App\Models\User;
 use App\Repositories\BaseRepository;
+use App\Repositories\User\UserRepositoryInterface;
 
 class GroupRepository extends BaseRepository implements GroupRepositoryInterface
 {
+    public function __construct(protected UserRepositoryInterface $userRepository)
+    {
+        parent::__construct();
+    }
     public function getModel()
     {
         return Group::class;
@@ -40,10 +45,7 @@ class GroupRepository extends BaseRepository implements GroupRepositoryInterface
 
     public function acceptUser(Group $group, User $user)
     {
-        $isInWaiting = $user->groups()->wherePivot('group_id', $group->id)
-            ->wherePivot('status', JoinGroupStatus::WAITING)
-            ->exists();
-        if ($isInWaiting) {
+        if ($this->userRepository->isWaitingAcceptGroup($group, $user)) {
             $user->groups()->updateExistingPivot($group->id, ['status' => JoinGroupStatus::JOINED]);
         }
     }

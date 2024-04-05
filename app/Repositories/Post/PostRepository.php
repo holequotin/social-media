@@ -3,6 +3,7 @@
 namespace App\Repositories\Post;
 
 use App\Enums\PostType;
+use App\Models\Group;
 use App\Models\Post;
 use App\Repositories\BaseRepository;
 use App\Repositories\Friendship\FriendshipRepositoryInterface;
@@ -64,5 +65,10 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
     {
         if ($post->sharedPost == null) return 0;
         return $this->getSharedLevel($post->sharedPost) + 1;
+    }
+
+    public function getPostsInGroup(Group $group, $perPage)
+    {
+        return $group->posts()->with(['user', 'images', 'reactions', 'sharedPost'])->paginate($perPage);
     }
 }

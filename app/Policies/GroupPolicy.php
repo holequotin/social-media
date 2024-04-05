@@ -5,15 +5,15 @@ namespace App\Policies;
 use App\Enums\JoinGroupStatus;
 use App\Models\Group;
 use App\Models\User;
+use App\Repositories\User\UserRepositoryInterface;
 
 class GroupPolicy
 {
     /**
      * Create a new policy instance.
      */
-    public function __construct()
+    public function __construct(protected UserRepositoryInterface $userRepository)
     {
-        //
     }
 
     public function update(User $user, Group $group)
@@ -38,5 +38,15 @@ class GroupPolicy
                 ->wherePivot('status', JoinGroupStatus::WAITING)
                 ->exists();
 
+    }
+
+    public function getPosts(User $user, Group $group)
+    {
+        return $this->userRepository->isInGroup($group, $user);
+    }
+
+    public function getUsers(User $user, Group $group)
+    {
+        return $this->userRepository->isInGroup($group, $user);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Group;
 use App\Models\Post;
 use App\Repositories\Post\PostRepositoryInterface;
 use Illuminate\Support\Facades\DB;
@@ -51,6 +52,11 @@ class PostService
     public function getPostsByUser($user, $perPage = 15)
     {
         return $this->postRepository->getPostsByUser($user, $perPage);
+    }
+
+    public function getPostsInGroup(Group $group, $perPage = 15)
+    {
+        return $this->postRepository->getPostsInGroup($group, $perPage);
     }
 
     public function deletePost(Post $post)

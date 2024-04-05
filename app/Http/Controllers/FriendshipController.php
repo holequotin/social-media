@@ -20,8 +20,7 @@ class FriendshipController extends BaseApiController
 
     public function getFriendsByUser(Request $request, User $user)
     {
-        $perPage = $request->perPage;
-        $friends = $this->friendshipService->getFriendsByUser($user, $perPage);
+        $friends = $this->friendshipService->getFriendsByUser($user, $request->perPage);
         return $this->sendPaginateResponse(UserResource::collection($friends));
     }
 
@@ -57,8 +56,7 @@ class FriendshipController extends BaseApiController
 
     public function getFriendRequest(Request $request)
     {
-        $perPage = $request->perPage;
-        $friendships = $this->friendshipService->getFriendRequest(auth()->id(), $perPage);
+        $friendships = $this->friendshipService->getFriendRequest(auth()->id(), $request->perPage);
         return $this->sendPaginateResponse(FriendshipResource::collection($friendships));
     }
 }
