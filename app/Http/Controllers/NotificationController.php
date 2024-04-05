@@ -15,9 +15,8 @@ class NotificationController extends BaseApiController
 
     public function index(Request $request)
     {
-        $perPage = $request->perPage;
         $type = $request->type;
-        $notifications = $this->notificationService->getNotificationByUser(auth()->user(), $type, $perPage);
+        $notifications = $this->notificationService->getNotificationByUser(auth()->user(), $type, $request->perPage);
         $addedData = [
             "unread_count" => $this->notificationService->getUnreadNotificationCount(auth()->user()),
         ];

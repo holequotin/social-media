@@ -45,9 +45,7 @@ class UserController extends BaseApiController
 
     public function search(Request $request)
     {
-        $name = $request->name;
-        $perPage = $request->perPage;
-        $users = $this->userService->searchUserByName($name, $perPage);
+        $users = $this->userService->searchUserByName($request->name, $request->perPage);
 
         return $this->sendPaginateResponse(UserResource::collection($users));
     }
@@ -55,8 +53,7 @@ class UserController extends BaseApiController
     public function getUsersInGroup(Request $request, Group $group)
     {
         $this->authorize('getUsers', $group);
-        $perPage = $request->perPage;
-        $users = $this->userService->getUsersInGroup($group, $perPage);
+        $users = $this->userService->getUsersInGroup($group, $request->perPage);
 
         return $this->sendPaginateResponse(UserResource::collection($users));
     }

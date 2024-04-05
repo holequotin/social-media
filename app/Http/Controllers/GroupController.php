@@ -111,8 +111,7 @@ class GroupController extends BaseApiController
 
     public function getGroupsByUser(Request $request, User $user)
     {
-        $perPage = $request->perPage;
-        $groups = $this->groupService->getGroupsByUser($user, $perPage);
+        $groups = $this->groupService->getGroupsByUser($user, $request->perPage);
 
         return $this->sendPaginateResponse(GroupResource::collection($groups));
     }

@@ -93,8 +93,7 @@ class CommentController extends BaseApiController
 
     public function getCommentsByPost(Request $request, Post $post)
     {
-        $perPage = $request->perPage;
-        $comments = $this->commentService->getCommentsByPost($post, $perPage);
+        $comments = $this->commentService->getCommentsByPost($post, $request->perPage);
         return $this->sendPaginateResponse(CommentResource::collection($comments));
     }
 }

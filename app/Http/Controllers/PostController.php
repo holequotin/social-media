@@ -32,8 +32,7 @@ class PostController extends BaseApiController
      */
     public function index(Request $request)
     {
-        $perPage = $request->perPage;
-        $posts = $this->postService->getPosts($perPage);
+        $posts = $this->postService->getPosts($request->perPage);
         return $this->sendPaginateResponse(PostResource::collection($posts));
     }
 
@@ -110,16 +109,14 @@ class PostController extends BaseApiController
 
     public function getPostsByUser(Request $request, User $user)
     {
-        $perPage = $request->perPage;
-        $posts = $this->postService->getPostsByUser($user, $perPage);
+        $posts = $this->postService->getPostsByUser($user, $request->perPage);
         return $this->sendPaginateResponse(PostResource::collection($posts));
     }
 
     public function getPostsInGroup(Request $request, Group $group)
     {
         $this->authorize('getPosts', $group);
-        $perPage = $request->perPage;
-        $posts = $this->postService->getPostsInGroup($group, $perPage);
+        $posts = $this->postService->getPostsInGroup($group, $request->perPage);
 
         return $this->sendPaginateResponse(PostResource::collection($posts));
     }
