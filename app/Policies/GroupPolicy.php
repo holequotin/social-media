@@ -5,15 +5,15 @@ namespace App\Policies;
 use App\Enums\JoinGroupStatus;
 use App\Models\Group;
 use App\Models\User;
+use App\Repositories\Group\GroupRepositoryInterface;
 
 class GroupPolicy
 {
     /**
      * Create a new policy instance.
      */
-    public function __construct()
+    public function __construct(protected GroupRepositoryInterface $groupRepository)
     {
-        //
     }
 
     public function update(User $user, Group $group)
@@ -42,11 +42,11 @@ class GroupPolicy
 
     public function getPosts(User $user, Group $group)
     {
-        return $user->isInGroup($group);
+        return $this->groupRepository->isInGroup($group, $user);
     }
 
     public function getUsers(User $user, Group $group)
     {
-        return $user->isInGroup($group);
+        return $this->groupRepository->isInGroup($group, $user);
     }
 }

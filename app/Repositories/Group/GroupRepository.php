@@ -22,7 +22,7 @@ class GroupRepository extends BaseRepository implements GroupRepositoryInterface
         }
     }
 
-    public function leaveGroup(Group $group, User $user)
+    public function leaveGroup(Group $grouzp, User $user)
     {
         if ($user->groups->contains($group)) {
             $user->groups()->detach($group->id);
@@ -40,7 +40,7 @@ class GroupRepository extends BaseRepository implements GroupRepositoryInterface
 
     public function acceptUser(Group $group, User $user)
     {
-        if ($user->isWaitingAcceptGroup($group)) {
+        if ($this->isWaitingAcceptGroup($group, $user)) {
             $user->groups()->updateExistingPivot($group->id, ['status' => JoinGroupStatus::JOINED]);
         }
     }
@@ -48,5 +48,19 @@ class GroupRepository extends BaseRepository implements GroupRepositoryInterface
     public function getGroupsByUser(User $user, $perPage)
     {
         return $user->groups()->paginate($perPage);
+    }
+
+    public function isInGroup(Group $group, User $user)
+    {
+        return $user->groups()->wherePivot('group_id', $group->id)
+            ->wherePivot('status', JoinGroupStatus::JOINED)
+            ->exists();
+    }
+
+    public function isWaitingAcceptGroup(Group $group, User $user)
+    {
+        return $user->groups()->wherePivot('group_id', $group->id)
+            ->wherePivot('status', JoinGroupStatus::WAITING)
+            ->exists();
     }
 }
