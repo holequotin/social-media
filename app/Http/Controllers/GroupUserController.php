@@ -6,7 +6,6 @@ use App\Http\Resources\GroupUserResource;
 use App\Services\GroupUserService;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class GroupUserController extends BaseApiController
@@ -22,7 +21,7 @@ class GroupUserController extends BaseApiController
             return $this->sendPaginateResponse(GroupUserResource::collection($joinRequests));
         } catch (Exception $exception) {
             Log::error($exception);
-            return $this->sendError(['error' => $exception->getMessage()], Response::HTTP_BAD_REQUEST);
+            return $this->sendError(['error' => $exception->getMessage()]);
         }
     }
 }
