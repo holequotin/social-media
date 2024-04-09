@@ -6,5 +6,6 @@ return [
         'has_joined' => 'Already joined group',
         'has_not_joined' => "Haven't joined the group yet",
         'invalid' => 'Invalid group',
+        'is_not_owner' => 'The user is not the group owner'
     ]
 ];

@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FriendshipController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\GroupUserController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReactionController;
@@ -111,6 +112,10 @@ Route::group(['middleware' => 'api'], function () {
             'prefix' => 'groups',
             'as' => 'groups.'
         ], function () {
+            Route::get('/request', [GroupUserController::class, 'getRequestsToJoinGroup'])->name('getRequests');
+            Route::get('/', [GroupController::class, 'search'])->name('search');
+            Route::get('/{group}', [GroupController::class, 'show'])->name('show');
+            Route::get('/{group}/join/status', [GroupController::class, 'getJoinGroupStatus'])->name('status');
             Route::get('/{group}/posts', [PostController::class, 'getPostsInGroup'])->name('posts');
             Route::get('/{group}/users', [UserController::class, 'getUsersInGroup'])->name('users');
             Route::post('/', [GroupController::class, 'store'])->name('store');
