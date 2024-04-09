@@ -31,6 +31,7 @@ class GroupService
             $validated = ImageHelper::addPath($validated, 'groups/' . auth()->id(), 'url');
             $group = $this->groupRepository->create($validated)->load(['owner']);
             auth()->user()->groups()->attach($group->id);
+            $group->load('owner');
             DB::commit();
             return $group;
         } catch (Throwable $th) {
@@ -106,5 +107,15 @@ class GroupService
     public function getGroupsByUser(User $user, $perPage)
     {
         return $this->userRepository->getGroupsByUser($user, $perPage);
+    }
+
+    public function searchGroupByName($name, $perPage = 15)
+    {
+        return $this->groupRepository->getGroupsByName($name, $perPage);
+    }
+
+    public function getJoinGroupStatus(Group $group, User $user)
+    {
+        return $this->groupRepository->getJoinGroupStatus($group, $user);
     }
 }

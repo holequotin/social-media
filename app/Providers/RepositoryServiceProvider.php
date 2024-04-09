@@ -8,6 +8,8 @@ use App\Repositories\Friendship\FriendshipRepository;
 use App\Repositories\Friendship\FriendshipRepositoryInterface;
 use App\Repositories\Group\GroupRepository;
 use App\Repositories\Group\GroupRepositoryInterface;
+use App\Repositories\GroupUser\GroupUserRepository;
+use App\Repositories\GroupUser\GroupUserRepositoryInterface;
 use App\Repositories\Notification\NotificationRepository;
 use App\Repositories\Notification\NotificationRepositoryInterface;
 use App\Repositories\Post\PostRepository;
@@ -36,6 +38,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(FriendshipRepositoryInterface::class, FriendshipRepository::class);
         $this->app->bind(NotificationRepositoryInterface::class, NotificationRepository::class);
         $this->app->bind(GroupRepositoryInterface::class, GroupRepository::class);
+        $this->app->bind(GroupUserRepositoryInterface::class, GroupUserRepository::class);
     }
 
     /**

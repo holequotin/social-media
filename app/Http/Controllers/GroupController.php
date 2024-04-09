@@ -41,6 +41,12 @@ class GroupController extends BaseApiController
         return $this->sendResponse(GroupResource::make($group));
     }
 
+    public function show(Group $group)
+    {
+        $group->load(['owner']);
+        return $this->sendResponse(GroupResource::make($group));
+    }
+
     public function destroy(Group $group)
     {
         $this->authorize('delete', $group);
@@ -114,5 +120,16 @@ class GroupController extends BaseApiController
         $groups = $this->groupService->getGroupsByUser($user, $request->perPage);
 
         return $this->sendPaginateResponse(GroupResource::collection($groups));
+    }
+
+    public function search(Request $request)
+    {
+        $groups = $this->groupService->searchGroupByName($request->name, $request->perPage);
+        return $this->sendPaginateResponse(GroupResource::collection($groups));
+    }
+
+    public function getJoinGroupStatus(Group $group)
+    {
+        return $this->sendResponse(['status' => $this->groupService->getJoinGroupStatus($group, auth()->user())]);
     }
 }
