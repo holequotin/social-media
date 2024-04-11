@@ -13,6 +13,7 @@ class Group extends Model
 {
     use HasFactory;
 
+    protected $with = ['owner'];
     protected $fillable = [
         'name',
         'owner_id',

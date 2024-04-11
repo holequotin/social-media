@@ -25,6 +25,8 @@ class Post extends Model
         'type' => PostType::PUBLIC
     ];
 
+    protected $with = ['group'];
+
     public function images() : HasMany
     {
         return $this->hasMany(PostImage::class,'post_id','id');
