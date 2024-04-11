@@ -25,7 +25,7 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
     public function getUsersInGroup(Group $group, $perPage)
     {
-        return $group->members()->paginate($perPage);
+        return $group->members()->wherePivot('status', JoinGroupStatus::JOINED)->paginate($perPage);
     }
 
     public function isInGroup(Group $group, User $user)

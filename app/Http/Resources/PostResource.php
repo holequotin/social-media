@@ -25,6 +25,7 @@ class PostResource extends JsonResource
             'updated_at' => $this->updated_at,
             'user' => UserResource::make($this->whenLoaded('user')),
             'shared_post' => PostResource::make($this->whenLoaded('sharedPost')),
+            'group' => GroupResource::make($this->whenLoaded('group')),
         ];
     }
 }

@@ -87,6 +87,9 @@ class GroupService
         if (!$user->groups->contains($group)) {
             throw new Exception(__('exception.group.has_not_joined'));
         }
+        if ($user->is($group->owner)) {
+            throw new Exception(__('exception.group.is_owner'));
+        }
         $this->groupRepository->leaveGroup($group, $user);
     }
 

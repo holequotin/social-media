@@ -47,7 +47,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
     public function getPostsByUser($user, $perPage)
     {
         if ($user->is(auth()->user())) {
-            return $this->getModel()::where('user_id', $user->id)->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions', 'sharedPost'])->paginate($perPage);
+            return $this->getModel()::where('user_id', $user->id)->whereNull('group_id')->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions', 'sharedPost'])->paginate($perPage);
         }
         $query = $this->getModel()::where('user_id', $user->id)
             ->where('type', PostType::PUBLIC);
@@ -58,7 +58,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
                             ->where('type', PostType::FRIENDS);
             });
         }
-        return $query->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions', 'sharedPost'])->paginate($perPage);
+        return $query->whereNull('group_id')->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions', 'sharedPost'])->paginate($perPage);
     }
 
     public function getSharedLevel(Post $post)
@@ -69,6 +69,6 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
 
     public function getPostsInGroup(Group $group, $perPage)
     {
-        return $group->posts()->with(['user', 'images', 'reactions', 'sharedPost'])->paginate($perPage);
+        return $group->posts()->with(['user', 'images', 'reactions', 'sharedPost'])->orderBy('created_at', 'desc')->paginate($perPage);
     }
 }
