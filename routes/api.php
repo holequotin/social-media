@@ -5,6 +5,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FriendshipController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\GroupUserController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReactionController;
@@ -126,6 +127,15 @@ Route::group(['middleware' => 'api'], function () {
             Route::post('/{group}/leave', [GroupController::class, 'leaveGroup'])->name('leave');
             Route::patch('/{group}', [GroupController::class, 'update'])->name('update');
             Route::delete('/{group}', [GroupController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::group([
+            'prefix' => 'messages',
+            'as' => 'messages.'
+        ], function () {
+            Route::post('/', [MessageController::class, 'store'])->name('store');
+            Route::get('/last-messages', [MessageController::class, 'getLastMessages']);
+            Route::get('/{user}', [MessageController::class, 'index']);
         });
     });
 });
