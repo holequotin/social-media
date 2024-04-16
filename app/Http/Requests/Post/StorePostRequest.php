@@ -29,7 +29,7 @@ class StorePostRequest extends FormRequest
             'body' => ["required_without:images"],
             'images' => ["required_without:body",'max:4'],
             'images.*' => ['image', 'max:2048'],
-            'type' => ['string', 'required', 'in:' . implode(',', PostType::getValues())],
+            'type' => ['string', 'in:' . implode(',', PostType::getValues()), 'required_without:group_id'],
             'group_id' => ['nullable', 'exists:groups,id', 'exists:group_user,group_id,user_id,' . auth()->id() . ',status,' . JoinGroupStatus::JOINED],
         ];
     }

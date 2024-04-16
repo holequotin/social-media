@@ -9,5 +9,5 @@ interface MessageRepositoryInterface extends RepositoryInterface
 {
     public function getMessagesBetweenUsers(User $user1, User $user2, $perPage);
 
-    public function getLastMessages(User $user);
+    public function getLastMessages(User $user, $perPage);
 }

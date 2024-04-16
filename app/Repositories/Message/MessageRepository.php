@@ -25,7 +25,7 @@ class MessageRepository extends BaseRepository implements MessageRepositoryInter
         ])->orderBy('created_at', 'desc')->paginate($perPage);
     }
 
-    public function getLastMessages(User $user)
+    public function getLastMessages(User $user, $perPage)
     {
         $userId = $user->id;
         $lastMessages = Message::select('id', 'body', 'from_user_id', 'to_user_id', 'created_at', 'updated_at')
@@ -37,7 +37,7 @@ class MessageRepository extends BaseRepository implements MessageRepositoryInter
                     ->groupByRaw('CASE WHEN from_user_id = ' . $userId . ' THEN to_user_id ELSE from_user_id END');
             })
             ->orderBy('created_at', 'desc')
-            ->paginate();
+            ->paginate($perPage);
 
         return $lastMessages;
     }

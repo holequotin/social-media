@@ -22,8 +22,8 @@ class MessageService
         return $this->messageRepository->getMessagesBetweenUsers($user, auth()->user(), $perPage);
     }
 
-    public function getLastMessages(User $user)
+    public function getLastMessages(User $user, $perPage = 15)
     {
-        return $this->messageRepository->getLastMessages($user);
+        return $this->messageRepository->getLastMessages($user, $perPage);
     }
 }
