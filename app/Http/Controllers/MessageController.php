@@ -77,7 +77,7 @@ class MessageController extends BaseApiController
 
     public function getLastMessages(Request $request)
     {
-        $messages = $this->messageService->getLastMessages(auth()->user(), $request->perPage);
+        $messages = $this->messageService->getLastMessages(auth()->user());
         return $this->sendPaginateResponse(MessageResource::collection($messages));
     }
 }
