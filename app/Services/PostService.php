@@ -6,6 +6,7 @@ use App\Enums\GroupType;
 use App\Enums\PostType;
 use App\Models\Group;
 use App\Models\Post;
+use App\Models\User;
 use App\Repositories\Group\GroupRepositoryInterface;
 use App\Repositories\Post\PostRepositoryInterface;
 use Illuminate\Support\Facades\DB;
@@ -103,5 +104,10 @@ class PostService
         }
 
         return $data;
+    }
+
+    public function getAllPostGroup(User $user)
+    {
+        return $this->postRepository->getAllPostGroup($user);
     }
 }

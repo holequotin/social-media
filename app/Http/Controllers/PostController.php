@@ -130,4 +130,11 @@ class PostController extends BaseApiController
 
         return $this->sendResponse(PostResource::make($newPost));
     }
+
+    public function getAllPostGroup(Request $request)
+    {
+        $posts = $this->postService->getAllPostGroup(auth()->user());
+
+        return $this->sendPaginateResponse(PostResource::collection($posts));
+    }
 }

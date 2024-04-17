@@ -25,7 +25,7 @@ class Post extends Model
         'type' => PostType::PUBLIC
     ];
 
-    protected $with = ['group'];
+    protected $with = ['group', 'user', 'images'];
 
     public function images() : HasMany
     {
