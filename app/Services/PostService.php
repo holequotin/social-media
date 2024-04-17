@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use App\Enums\GroupType;
+use App\Enums\PostType;
 use App\Models\Group;
 use App\Models\Post;
+use App\Repositories\Group\GroupRepositoryInterface;
 use App\Repositories\Post\PostRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -13,13 +16,15 @@ class PostService
     public function __construct(
         protected PostRepositoryInterface $postRepository,
         protected PostImageService $postImageService,
-        protected FileService $fileService
+        protected FileService              $fileService,
+        protected GroupRepositoryInterface $groupRepository
     ) {
     }
 
     public function createPost($data)
     {
         $data['user_id'] = auth()->id();
+        $data = $this->setTypeForPost($data);
         return $this->postRepository->create($data);
     }
 
@@ -79,5 +84,24 @@ class PostService
         $post->load(['user', 'sharedPost']);
 
         return $post;
+    }
+
+    public function setTypeForPost($data)
+    {
+        if (isset($data['group_id'])) {
+            $group = $this->groupRepository->find($data['group_id']);
+            switch ($group->type) {
+                case GroupType::PRIVATE:
+                    $data['type'] = PostType::PRIVATE;
+                    break;
+                case GroupType::PUBLIC:
+                    $data['type'] = PostType::PUBLIC;
+                    break;
+                default:
+                    $data['type'] = PostType::PUBLIC;
+            }
+        }
+
+        return $data;
     }
 }

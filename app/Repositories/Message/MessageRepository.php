@@ -14,8 +14,9 @@ class MessageRepository extends BaseRepository implements MessageRepositoryInter
         return Message::class;
     }
 
-    public function getMessagesBetweenUsers(User $user1, User $user2, $perPage)
+    public function getMessagesBetweenUsers(User $user1, User $user2)
     {
+        $perPage = request()?->perPage ?? config('define.paginate.perPage');
         return $this->getModel()::where([
             ['from_user_id', $user1->id],
             ['to_user_id', $user2->id]
@@ -28,6 +29,7 @@ class MessageRepository extends BaseRepository implements MessageRepositoryInter
     public function getLastMessages(User $user)
     {
         $userId = $user->id;
+        $perPage = request()?->perPage ?? config('define.paginate.perPage');
         $lastMessages = Message::select('id', 'body', 'from_user_id', 'to_user_id', 'created_at', 'updated_at')
             ->whereIn('id', function ($query) use ($userId) {
                 $query->selectRaw('MAX(id)')
@@ -37,7 +39,7 @@ class MessageRepository extends BaseRepository implements MessageRepositoryInter
                     ->groupByRaw('CASE WHEN from_user_id = ' . $userId . ' THEN to_user_id ELSE from_user_id END');
             })
             ->orderBy('created_at', 'desc')
-            ->paginate();
+            ->paginate($perPage);
 
         return $lastMessages;
     }

@@ -17,9 +17,9 @@ class MessageService
         return $this->messageRepository->create($validated)->load(['fromUser', 'toUser']);
     }
 
-    public function getMessageWithUser(User $user, $perPage = 10)
+    public function getMessageWithUser(User $user)
     {
-        return $this->messageRepository->getMessagesBetweenUsers($user, auth()->user(), $perPage);
+        return $this->messageRepository->getMessagesBetweenUsers($user, auth()->user());
     }
 
     public function getLastMessages(User $user)
