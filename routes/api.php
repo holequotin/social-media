@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FriendshipController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\GroupInvitationController;
 use App\Http\Controllers\GroupUserController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
@@ -142,6 +143,15 @@ Route::group(['middleware' => 'api'], function () {
             Route::post('/', [MessageController::class, 'store'])->name('store');
             Route::get('/last-messages', [MessageController::class, 'getLastMessages']);
             Route::get('/{user}', [MessageController::class, 'index']);
+        });
+
+        Route::group([
+            'prefix' => 'invitations',
+            'as' => 'invitations.'
+        ], function () {
+            Route::get('{group}/can-invite', [GroupInvitationController::class, 'getUsersCanInvite'])->name('canInvite');
+            Route::post('/', [GroupInvitationController::class, 'store'])->name('store');
+            Route::patch('/{groupInvitation}/reply', [GroupInvitationController::class, 'replyInvitation'])->name('reply');
         });
     });
 });

@@ -8,6 +8,7 @@ use App\Models\Group;
 use App\Models\User;
 use App\Notifications\GroupRequestNotification;
 use App\Repositories\Group\GroupRepositoryInterface;
+use App\Repositories\GroupInvitation\GroupInvitationRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
 use Carbon\Carbon;
 use Exception;
@@ -21,6 +22,7 @@ class GroupService
         protected GroupRepositoryInterface $groupRepository,
         protected FileService             $fileService,
         protected UserRepositoryInterface $userRepository,
+        protected GroupInvitationRepositoryInterface $groupInvitationRepository
     )
     {
     }
@@ -80,24 +82,40 @@ class GroupService
 
     public function joinGroup(Group $group, User $user): void
     {
-        if ($group->type == GroupType::PRIVATE) {
-            throw new Exception(__('exception.group.join_not_allowed'));
+        try {
+            DB::beginTransaction();
+            if ($group->type == GroupType::PRIVATE) {
+                throw new Exception(__('exception.group.join_not_allowed'));
+            }
+            if ($user->groups->contains($group)) {
+                throw new Exception(__('exception.group.has_joined'));
+            }
+            $this->groupRepository->joinGroup($group, $user);
+            $this->groupInvitationRepository->deleteByBeInviteUser($user->id, $group->id);
+            DB::commit();
+        } catch (Exception $exception) {
+            DB::rollBack();
+            throw  $exception;
         }
-        if ($user->groups->contains($group)) {
-            throw new Exception(__('exception.group.has_joined'));
-        }
-        $this->groupRepository->joinGroup($group, $user);
     }
 
     public function leaveGroup(Group $group, User $user): void
     {
-        if (!$user->groups->contains($group)) {
-            throw new Exception(__('exception.group.has_not_joined'));
+        try {
+            DB::beginTransaction();
+            if (!$user->groups->contains($group)) {
+                throw new Exception(__('exception.group.has_not_joined'));
+            }
+            if ($user->is($group->owner)) {
+                throw new Exception(__('exception.group.is_owner'));
+            }
+            $this->groupInvitationRepository->deleteByInviter($user->id, $group->id);
+            $this->groupRepository->leaveGroup($group, $user);
+            DB::commit();
+        } catch (Exception $exception) {
+            DB::rollBack();
+            throw $exception;
         }
-        if ($user->is($group->owner)) {
-            throw new Exception(__('exception.group.is_owner'));
-        }
-        $this->groupRepository->leaveGroup($group, $user);
     }
 
     public function requestToJoinGroup(Group $group, User $user): void
@@ -111,7 +129,15 @@ class GroupService
 
     public function acceptUser(Group $group, User $user)
     {
-        $this->groupRepository->acceptUser($group, $user);
+        try {
+            DB::beginTransaction();
+            $this->groupInvitationRepository->deleteByBeInviteUser($user->id, $group->id);
+            $this->groupRepository->acceptUser($group, $user);
+            DB::commit();
+        } catch (Exception $exception) {
+            DB::rollBack();
+            throw $exception;
+        }
     }
 
     public function getGroupsByUser(User $user, $perPage)
