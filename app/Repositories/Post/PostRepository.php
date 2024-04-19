@@ -5,6 +5,7 @@ namespace App\Repositories\Post;
 use App\Enums\PostType;
 use App\Models\Group;
 use App\Models\Post;
+use App\Models\User;
 use App\Repositories\BaseRepository;
 use App\Repositories\Friendship\FriendshipRepositoryInterface;
 
@@ -21,14 +22,14 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
         return Post::class;
     }
 
-    public function find($postId)
+    public function find($id)
     {
-        return $this->getModel()::with(['images', 'user', 'sharedPost'])->findOrFail($postId);
+        return $this->getModel()::with(['sharedPost'])->findOrFail($id);
     }
 
     public function paginate($perPage = 10)
     {
-        return $this->getModel()::with('images')->paginate($perPage);
+        return $this->getModel()::paginate($perPage);
     }
 
     public function getPosts($perPage)
@@ -39,7 +40,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
                 $query->where('type', PostType::FRIENDS)
                     ->whereIn('user_id', [...$friends, auth()->id()]);
             })->orderBy('created_at', 'desc')
-            ->with(['user', 'images', 'reactions', 'sharedPost'])
+            ->with(['reactions', 'sharedPost'])
             ->paginate($perPage);
         return $posts;
     }
@@ -47,7 +48,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
     public function getPostsByUser($user, $perPage)
     {
         if ($user->is(auth()->user())) {
-            return $this->getModel()::where('user_id', $user->id)->whereNull('group_id')->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions', 'sharedPost'])->paginate($perPage);
+            return $this->getModel()::where('user_id', $user->id)->whereNull('group_id')->orderBy('created_at', 'desc')->with(['reactions', 'sharedPost'])->paginate($perPage);
         }
         $query = $this->getModel()::where('user_id', $user->id)
             ->where('type', PostType::PUBLIC);
@@ -58,7 +59,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
                             ->where('type', PostType::FRIENDS);
             });
         }
-        return $query->whereNull('group_id')->orderBy('created_at', 'desc')->with(['user', 'images', 'reactions', 'sharedPost'])->paginate($perPage);
+        return $query->whereNull('group_id')->orderBy('created_at', 'desc')->with(['reactions', 'sharedPost'])->paginate($perPage);
     }
 
     public function getSharedLevel(Post $post)
@@ -69,6 +70,13 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
 
     public function getPostsInGroup(Group $group, $perPage)
     {
-        return $group->posts()->with(['user', 'images', 'reactions', 'sharedPost'])->orderBy('created_at', 'desc')->paginate($perPage);
+        return $group->posts()->with(['reactions', 'sharedPost'])->orderBy('created_at', 'desc')->paginate($perPage);
+    }
+
+    public function getAllPostGroup(User $user)
+    {
+        $perPage = request()?->perPage ?? config('define.paginate.perPage');
+        $groupIds = $user->groups()->pluck('groups.id')->toArray();
+        return $this->getModel()::whereIn('group_id', $groupIds)->orderBy('created_at', 'desc')->paginate($perPage);
     }
 }

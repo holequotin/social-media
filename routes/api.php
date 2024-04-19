@@ -113,6 +113,7 @@ Route::group(['middleware' => 'api'], function () {
             'prefix' => 'groups',
             'as' => 'groups.'
         ], function () {
+            Route::get('/feed', [PostController::class, 'getAllPostGroup'])->name('feed');
             Route::get('/request', [GroupUserController::class, 'getRequestsToJoinGroup'])->name('getRequests');
             Route::get('/', [GroupController::class, 'search'])->name('search');
             Route::get('/{group}', [GroupController::class, 'show'])->name('show');
