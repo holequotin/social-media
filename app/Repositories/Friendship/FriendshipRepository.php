@@ -3,6 +3,7 @@
 namespace App\Repositories\Friendship;
 
 use App\Enums\FriendshipStatus;
+use App\Enums\UserStatus;
 use App\Models\Friendship;
 use App\Models\User;
 use App\Repositories\BaseRepository;
@@ -48,6 +49,10 @@ class FriendshipRepository extends BaseRepository implements FriendshipRepositor
     {
         return $this->getModel()::where('to_user_id', $userId)
             ->where('status', FriendshipStatus::PENDING)
+            ->whereNotIn('from_user_id', function ($query) {
+                $query->select('id')->from('users')
+                    ->where('status', UserStatus::BLOCKED);
+            })
             ->with(['fromUser'])
             ->paginate($perPage);
     }
