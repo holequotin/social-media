@@ -1,6 +1,7 @@
 <?php
 namespace App\Repositories\User;
 
+use App\Enums\FriendshipStatus;
 use App\Enums\JoinGroupStatus;
 use App\Models\Group;
 use App\Models\User;
@@ -45,5 +46,19 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     public function getGroupsByUser(User $user, $perPage)
     {
         return $user->groups()->paginate($perPage);
+    }
+
+    public function getMutualFriends(User $user1, User $user2)
+    {
+        $perPage = request()?->perPage ?? config('define.paginate.perPage');
+        $friendId1 = $user1->friends()->where('status', FriendshipStatus::ACCEPTED)->pluck('users.id')
+            ->merge($user1->isFriends()->where('status', FriendshipStatus::ACCEPTED)->pluck('users.id'));
+
+        $friendId2 = $user2->friends()->where('status', FriendshipStatus::ACCEPTED)->pluck('users.id')
+            ->merge($user2->isFriends()->where('status', FriendshipStatus::ACCEPTED)->pluck('users.id'));
+
+        $mutualFriendId = $friendId1->intersect($friendId2);
+
+        return $this->getModel()::whereIn('id', $mutualFriendId)->paginate($perPage);
     }
 }

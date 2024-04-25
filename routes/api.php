@@ -93,6 +93,7 @@ Route::group(['middleware' => 'api'], function () {
             Route::post('/delete', [FriendshipController::class, 'unfriend'])->name('unfriend');
             Route::get('/requests', [FriendshipController::class, 'getFriendRequest'])->name('requests');
             Route::get('/{user}', [FriendshipController::class, 'getFriendship']);
+            Route::get('/mutual/{user}', [FriendshipController::class, 'getMutualFriends'])->name('mutual');
         });
 
         Route::group([

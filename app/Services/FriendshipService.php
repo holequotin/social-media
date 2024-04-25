@@ -3,11 +3,16 @@
 namespace App\Services;
 
 use App\Enums\FriendshipStatus;
+use App\Models\User;
 use App\Repositories\Friendship\FriendshipRepositoryInterface;
+use App\Repositories\User\UserRepositoryInterface;
 
 class FriendshipService
 {
-    public function __construct(protected FriendshipRepositoryInterface $friendshipRepository)
+    public function __construct(
+        protected FriendshipRepositoryInterface $friendshipRepository,
+        protected UserRepositoryInterface       $userRepository
+    )
     {
     }
 
@@ -43,5 +48,10 @@ class FriendshipService
     public function getFriendRequest($userId, $perPage = 15)
     {
         return $this->friendshipRepository->getFriendRequest($userId, $perPage);
+    }
+
+    public function getMutualFriends(User $user1, User $user2)
+    {
+        return $this->userRepository->getMutualFriends($user1, $user2);
     }
 }
