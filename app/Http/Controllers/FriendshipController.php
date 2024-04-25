@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Friendship\SendFriendRequest;
 use App\Http\Requests\Friendship\UnfriendRequest;
 use App\Http\Resources\FriendshipResource;
+use App\Http\Resources\SuggestionFriendResource;
 use App\Http\Resources\UserResource;
 use App\Models\Friendship;
 use App\Models\User;
@@ -63,5 +64,10 @@ class FriendshipController extends BaseApiController
     public function getMutualFriends(Request $request, User $user)
     {
         return $this->sendPaginateResponse(UserResource::collection($this->friendshipService->getMutualFriends(auth()->user(), $user)));
+    }
+
+    public function getSuggestionFriends(Request $request)
+    {
+        return $this->sendResponse(SuggestionFriendResource::collection($this->friendshipService->getSuggestionFriends(auth()->user())));
     }
 }
