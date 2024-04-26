@@ -54,4 +54,15 @@ class FriendshipService
     {
         return $this->userRepository->getMutualFriends($user1, $user2);
     }
+
+    public function getSuggestionFriends(User $user)
+    {
+        $friendSuggestionCount = config('define.friend.suggestion');
+        $users = $this->userRepository->getSuggestionFriends($user);
+        $ids = $users->pluck('id')->all();
+        if ($users->count() < $friendSuggestionCount) {
+            $users = $users->merge($this->userRepository->getRandomSuggestionFriends($user, $ids, $friendSuggestionCount - $users->count()));
+        }
+        return $users;
+    }
 }

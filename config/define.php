@@ -9,5 +9,8 @@ return [
     ],
     'paginate' => [
         'perPage' => 15
+    ],
+    'friend' => [
+        'suggestion' => 10
     ]
 ];
