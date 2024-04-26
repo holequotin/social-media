@@ -8,5 +8,8 @@ return [
         'invalid' => 'Invalid group',
         'is_not_owner' => 'The user is not the group owner',
         'is_owner' => 'The user is the group owner',
+    ],
+    'friend' => [
+        'is_not_friend' => 'The user is not the friend',
     ]
 ];

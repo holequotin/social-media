@@ -4,6 +4,7 @@ namespace App\Repositories\Friendship;
 
 use App\Enums\FriendshipStatus;
 use App\Models\Friendship;
+use App\Models\User;
 use App\Repositories\BaseRepository;
 
 class FriendshipRepository extends BaseRepository implements FriendshipRepositoryInterface
@@ -49,5 +50,16 @@ class FriendshipRepository extends BaseRepository implements FriendshipRepositor
             ->where('status', FriendshipStatus::PENDING)
             ->with(['fromUser'])
             ->paginate($perPage);
+    }
+
+    public function setNickname(User $user, string|null $nickname)
+    {
+        $friendship = $this->getFriendship($user->id, auth()->id());
+        if ($friendship->from_user_id == $user->id) {
+            $friendship->from_user_nickname = $nickname;
+        } else {
+            $friendship->to_user_nickname = $nickname;
+        }
+        $friendship->save();
     }
 }

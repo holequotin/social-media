@@ -6,6 +6,7 @@ use App\Enums\FriendshipStatus;
 use App\Models\User;
 use App\Repositories\Friendship\FriendshipRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
+use Exception;
 
 class FriendshipService
 {
@@ -64,5 +65,13 @@ class FriendshipService
             $users = $users->merge($this->userRepository->getRandomSuggestionFriends($user, $ids, $friendSuggestionCount - $users->count()));
         }
         return $users;
+    }
+
+    public function setNickname(User $user, string|null $nickname)
+    {
+        if (!$user->checkIsFriend(auth()->id())) {
+            throw new Exception(__('exception.friend.is_not_friend'));
+        }
+        $this->friendshipRepository->setNickname($user, $nickname);
     }
 }
