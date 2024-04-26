@@ -4,6 +4,7 @@ namespace App\Repositories\Friendship;
 
 use App\Enums\FriendshipStatus;
 use App\Models\Friendship;
+use App\Models\User;
 use App\Repositories\BaseRepository;
 
 class FriendshipRepository extends BaseRepository implements FriendshipRepositoryInterface
@@ -15,8 +16,14 @@ class FriendshipRepository extends BaseRepository implements FriendshipRepositor
 
     public function getFriendsByUser($user, $perPage = 15)
     {
-        $send_friends = $user->friends()->where('status', FriendshipStatus::ACCEPTED)->getQuery()->select('users.*');
-        $be_send_friends = $user->isFriends()->where('status', FriendshipStatus::ACCEPTED)->getQuery()->select('users.*');
+        if ($user->is(auth()->user())) {
+            $selectSend = ['users.*', 'friendships.to_user_nickname as nickname'];
+            $selectBeSend = ['users.*', 'friendships.from_user_nickname as nickname'];
+        } else {
+            $selectSend = $selectBeSend = ['users.*'];
+        }
+        $send_friends = $user->friends()->where('status', FriendshipStatus::ACCEPTED)->getQuery()->select(...$selectSend);
+        $be_send_friends = $user->isFriends()->where('status', FriendshipStatus::ACCEPTED)->getQuery()->select(...$selectBeSend);
         return $send_friends->union($be_send_friends)->paginate($perPage);
     }
 
@@ -43,5 +50,16 @@ class FriendshipRepository extends BaseRepository implements FriendshipRepositor
             ->where('status', FriendshipStatus::PENDING)
             ->with(['fromUser'])
             ->paginate($perPage);
+    }
+
+    public function setNickname(User $user, string|null $nickname)
+    {
+        $friendship = $this->getFriendship($user->id, auth()->id());
+        if ($friendship->from_user_id == $user->id) {
+            $friendship->from_user_nickname = $nickname;
+        } else {
+            $friendship->to_user_nickname = $nickname;
+        }
+        $friendship->save();
     }
 }

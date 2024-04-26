@@ -18,7 +18,9 @@ class FriendshipResource extends JsonResource
             'id' => $this->id,
             'from_user' => UserResource::make($this->whenLoaded('fromUser')),
             'to_user' => UserResource::make($this->whenLoaded('toUser')),
-            'status' => $this->status
+            'status' => $this->status,
+            'from_user_nickname' => $this->from_user_nickname,
+            'to_user_nickname' => $this->to_user_nickname
         ];
     }
 }

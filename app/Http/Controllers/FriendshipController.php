@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Friendship\SendFriendRequest;
+use App\Http\Requests\Friendship\SetNickNameRequest;
 use App\Http\Requests\Friendship\UnfriendRequest;
+use App\Http\Resources\FriendResource;
 use App\Http\Resources\FriendshipResource;
 use App\Http\Resources\SuggestionFriendResource;
 use App\Http\Resources\UserResource;
 use App\Models\Friendship;
 use App\Models\User;
 use App\Services\FriendshipService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -22,7 +25,7 @@ class FriendshipController extends BaseApiController
     public function getFriendsByUser(Request $request, User $user)
     {
         $friends = $this->friendshipService->getFriendsByUser($user, $request->perPage);
-        return $this->sendPaginateResponse(UserResource::collection($friends));
+        return $this->sendPaginateResponse(FriendResource::collection($friends));
     }
 
     public function sendFriendRequest(SendFriendRequest $request)
@@ -69,5 +72,26 @@ class FriendshipController extends BaseApiController
     public function getSuggestionFriends(Request $request)
     {
         return $this->sendResponse(SuggestionFriendResource::collection($this->friendshipService->getSuggestionFriends(auth()->user())));
+    }
+
+    public function setNickname(SetNickNameRequest $request, User $user)
+    {
+        $validated = $request->validated();
+        try {
+            $this->friendshipService->setNickname($user, $validated['nickname']);
+            return $this->sendResponse(["message" => __("common.friendship.set_nickname_success")]);
+        } catch (Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function deleteNickname(Request $request, User $user)
+    {
+        try {
+            $this->friendshipService->setNickname($user, null);
+            return $this->sendResponse(["message" => __("common.friendship.nickname_deleted")]);
+        } catch (Exception $exception) {
+            return $this->sendError(['error' => $exception->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
     }
 }

@@ -26,7 +26,9 @@ return [
     ],
     'friendship' => [
         'not_exist' => 'Friendship does not exist',
-        'deleted' => 'Unfriend successfully'
+        'deleted' => 'Unfriend successfully',
+        'set_nickname_success' => 'Set nickname successfully',
+        'nickname_deleted' => 'Deleted nickname successfully',
     ],
     'group' => [
         'join_success' => 'Joined group successfully',

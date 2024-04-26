@@ -90,6 +90,8 @@ Route::group(['middleware' => 'api'], function () {
         ], function () {
             Route::post('/', [FriendshipController::class, 'sendFriendRequest'])->name('send');
             Route::patch('/{friendship}', [FriendshipController::class, 'acceptFriendRequest'])->name('accept');
+            Route::patch('/nickname/{user}', [FriendshipController::class, 'setNickname'])->name('setNickname');
+            Route::delete('/nickname/{user}', [FriendshipController::class, 'deleteNickname'])->name('deleteNickname');
             Route::post('/delete', [FriendshipController::class, 'unfriend'])->name('unfriend');
             Route::get('/requests', [FriendshipController::class, 'getFriendRequest'])->name('requests');
             Route::get('/{user}', [FriendshipController::class, 'getFriendship']);

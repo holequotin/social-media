@@ -15,7 +15,9 @@ class Friendship extends Model
     protected $fillable = [
         'to_user_id',
         'from_user_id',
-        'status'
+        'status',
+        'from_user_nickname',
+        'from_user_nickname',
     ];
 
     protected $attributes = [
@@ -23,7 +25,7 @@ class Friendship extends Model
     ];
 
     protected $dispatchesEvents = [
-        'created' => FriendshipCreated::class                                                          
+        'created' => FriendshipCreated::class
     ];
 
     public function fromUser() : BelongsTo
