@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PostType;
+use App\Models\Scopes\OwnerActive;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,6 +27,11 @@ class Post extends Model
     ];
 
     protected $with = ['group', 'user', 'images'];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new OwnerActive);
+    }
 
     public function images() : HasMany
     {

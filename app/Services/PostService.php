@@ -36,7 +36,7 @@ class PostService
 
     public function updatePost($post, $validated)
     {
-        if (!$post->shared_post_id) $validated['images'] = [];
+        if ($post->shared_post_id) $validated['images'] = [];
         try {
             DB::beginTransaction();
             $this->postImageService->createPostImages($validated['images'], $post->id);
