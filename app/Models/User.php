@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\FriendshipStatus;
+use App\Models\Scopes\ActiveScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -47,6 +48,11 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new ActiveScope);
+    }
 
     public function getJWTIdentifier()
     {

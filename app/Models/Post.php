@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PostType;
+use App\Enums\UserStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,6 +27,16 @@ class Post extends Model
     ];
 
     protected $with = ['group', 'user', 'images'];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope('notBlocked', function ($builder) {
+            $builder->whereNotIn('posts.user_id', function ($query) {
+                $query->select('id')->from('users')
+                    ->where('status', UserStatus::BLOCKED);
+            });
+        });
+    }
 
     public function images() : HasMany
     {

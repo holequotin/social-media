@@ -14,8 +14,6 @@ interface UserRepositoryInterface extends RepositoryInterface
     public function isWaitingAcceptGroup(Group $group, User $user);
     public function getGroupsByUser(User $user, $perPage);
     public function getMutualFriends(User $user1, User $user2);
-
     public function getSuggestionFriends(User $user);
-
     public function getRandomSuggestionFriends(User $user, $ids, $number);
 }

@@ -39,7 +39,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
             ->orWhere(function ($query) use ($friends) {
                 $query->where('type', PostType::FRIENDS)
                     ->whereIn('user_id', [...$friends, auth()->id()]);
-            })->orderBy('created_at', 'desc')
+            })->orderBy('posts.created_at', 'desc')
             ->with(['reactions', 'sharedPost'])
             ->paginate($perPage);
         return $posts;
@@ -48,7 +48,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
     public function getPostsByUser($user, $perPage)
     {
         if ($user->is(auth()->user())) {
-            return $this->getModel()::where('user_id', $user->id)->whereNull('group_id')->orderBy('created_at', 'desc')->with(['reactions', 'sharedPost'])->paginate($perPage);
+            return $this->getModel()::where('user_id', $user->id)->whereNull('group_id')->orderBy('posts.created_at', 'desc')->with(['reactions', 'sharedPost'])->paginate($perPage);
         }
         $query = $this->getModel()::where('user_id', $user->id)
             ->where('type', PostType::PUBLIC);
@@ -59,7 +59,7 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
                             ->where('type', PostType::FRIENDS);
             });
         }
-        return $query->whereNull('group_id')->orderBy('created_at', 'desc')->with(['reactions', 'sharedPost'])->paginate($perPage);
+        return $query->whereNull('group_id')->orderBy('posts.created_at', 'desc')->with(['reactions', 'sharedPost'])->paginate($perPage);
     }
 
     public function getSharedLevel(Post $post)
@@ -77,6 +77,6 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
     {
         $perPage = request()?->perPage ?? config('define.paginate.perPage');
         $groupIds = $user->groups()->pluck('groups.id')->toArray();
-        return $this->getModel()::whereIn('group_id', $groupIds)->orderBy('created_at', 'desc')->paginate($perPage);
+        return $this->getModel()::whereIn('group_id', $groupIds)->orderBy('posts.created_at', 'desc')->paginate($perPage);
     }
 }

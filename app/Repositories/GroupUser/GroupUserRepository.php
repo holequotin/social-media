@@ -2,6 +2,7 @@
 
 namespace App\Repositories\GroupUser;
 
+use App\Enums\UserStatus;
 use App\Models\Group;
 use App\Models\GroupUser;
 use App\Models\User;
@@ -20,13 +21,16 @@ class GroupUserRepository extends BaseRepository implements GroupUserRepositoryI
         if ($group) {
             $query = $this->getModel()::waiting()->where('group_id', $group->id);
         } else {
-            $query = $this->getModel()::waiting()->whereIn('user_id', function ($query) use ($user) {
+            $query = $this->getModel()::waiting()->whereIn('group_id', function ($query) use ($user) {
                 $query->select('id')
                     ->from('groups')
                     ->where('owner_id', $user->id);
             });
         }
 
-        return $query->with(['user', 'group'])->paginate($perPage);
+        return $query->whereNotIn('user_id', function ($query) {
+            $query->select('id')->from('users')
+                ->where('status', UserStatus::BLOCKED);
+        })->with(['user', 'group'])->paginate($perPage);
     }
 }

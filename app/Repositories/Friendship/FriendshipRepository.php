@@ -22,8 +22,8 @@ class FriendshipRepository extends BaseRepository implements FriendshipRepositor
         } else {
             $selectSend = $selectBeSend = ['users.*'];
         }
-        $send_friends = $user->friends()->where('status', FriendshipStatus::ACCEPTED)->getQuery()->select(...$selectSend);
-        $be_send_friends = $user->isFriends()->where('status', FriendshipStatus::ACCEPTED)->getQuery()->select(...$selectBeSend);
+        $send_friends = $user->friends()->where('friendships.status', FriendshipStatus::ACCEPTED)->getQuery()->select(...$selectSend);
+        $be_send_friends = $user->isFriends()->where('friendships.status', FriendshipStatus::ACCEPTED)->getQuery()->select(...$selectBeSend);
         return $send_friends->union($be_send_friends)->paginate($perPage);
     }
 
