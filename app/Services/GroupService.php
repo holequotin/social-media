@@ -12,6 +12,7 @@ use App\Repositories\User\UserRepositoryInterface;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Throwable;
 
 class GroupService
@@ -29,8 +30,11 @@ class GroupService
         try {
             DB::beginTransaction();
             $validated['owner_id'] = auth()->id();
+            $validated['slug'] = '';
             $validated = ImageHelper::addPath($validated, 'groups/' . auth()->id(), 'url');
             $group = $this->groupRepository->create($validated)->load(['owner']);
+            $group->slug = $this->createGroupSlug($group->id, $group->name);
+            $group->save();
             auth()->user()->groups()->attach($group->id, ['joined_at' => Carbon::now()]);
             $group->load('owner');
             DB::commit();
@@ -47,7 +51,9 @@ class GroupService
             $this->deleteImageGroup($group);
             $validated = ImageHelper::addPath($validated, 'groups/' . auth()->id(), 'url');
         }
-
+        if (isset($validated['name']) && $validated['name'] != $group->name) {
+            $validated['slug'] = $this->createGroupSlug($group->id, $validated['name']);
+        }
         return $this->groupRepository->update($group->id, $validated)->load(['owner']);
     }
 
@@ -121,5 +127,19 @@ class GroupService
     public function getJoinGroupStatus(Group $group, User $user)
     {
         return $this->groupRepository->getJoinGroupStatus($group, $user);
+    }
+
+    public function getGroupBySlug($slug)
+    {
+        return $this->groupRepository->getGroupBySlug($slug);
+    }
+
+    public function createGroupSlug($groupId, $name)
+    {
+        $slug = Str::slug($name);
+        if ($this->groupRepository->getModel()::where('slug', $slug)->exists()) {
+            $slug = $slug . '-' . $groupId;
+        }
+        return $slug;
     }
 }

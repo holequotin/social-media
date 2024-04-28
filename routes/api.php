@@ -120,7 +120,7 @@ Route::group(['middleware' => 'api'], function () {
             Route::get('/feed', [PostController::class, 'getAllPostGroup'])->name('feed');
             Route::get('/request', [GroupUserController::class, 'getRequestsToJoinGroup'])->name('getRequests');
             Route::get('/', [GroupController::class, 'search'])->name('search');
-            Route::get('/{group}', [GroupController::class, 'show'])->name('show');
+            Route::get('/{slug}', [GroupController::class, 'show'])->name('show');
             Route::get('/{group}/join-status', [GroupController::class, 'getJoinGroupStatus'])->name('status');
             Route::get('/{group}/posts', [PostController::class, 'getPostsInGroup'])->name('posts');
             Route::get('/{group}/users', [UserController::class, 'getUsersInGroup'])->name('users');

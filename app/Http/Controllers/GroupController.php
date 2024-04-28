@@ -41,10 +41,15 @@ class GroupController extends BaseApiController
         return $this->sendResponse(GroupResource::make($group));
     }
 
-    public function show(Group $group)
+    public function show(Request $request)
     {
-        $group->load(['owner']);
-        return $this->sendResponse(GroupResource::make($group));
+        $group = $this->groupService->getGroupBySlug($request->slug);
+        if ($group) {
+            $group->load(['owner']);
+            return $this->sendResponse(GroupResource::make($group));
+        }
+
+        return $this->sendError(__('common.not_found', ['model' => 'Group']), Response::HTTP_NOT_FOUND);
     }
 
     public function destroy(Group $group)

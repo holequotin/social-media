@@ -60,4 +60,9 @@ class GroupRepository extends BaseRepository implements GroupRepositoryInterface
     {
         return $group->members()->wherePivot('user_id', $user->id)->first()?->pivot->status;
     }
+
+    public function getGroupBySlug(string $slug)
+    {
+        return $this->getModel()::where('slug', $slug)->first();
+    }
 }

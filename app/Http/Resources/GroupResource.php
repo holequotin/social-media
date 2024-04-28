@@ -21,6 +21,7 @@ class GroupResource extends JsonResource
             'url' => Storage::url($this->url),
             'owner' => UserResource::make($this->whenLoaded('owner')),
             'type' => $this->type,
+            'slug' => $this->slug,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];
