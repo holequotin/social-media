@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Notifications\GroupRequestNotification;
 use App\Repositories\Group\GroupRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Throwable;
@@ -30,7 +31,7 @@ class GroupService
             $validated['owner_id'] = auth()->id();
             $validated = ImageHelper::addPath($validated, 'groups/' . auth()->id(), 'url');
             $group = $this->groupRepository->create($validated)->load(['owner']);
-            auth()->user()->groups()->attach($group->id);
+            auth()->user()->groups()->attach($group->id, ['joined_at' => Carbon::now()]);
             $group->load('owner');
             DB::commit();
             return $group;

@@ -33,4 +33,16 @@ class GroupUserRepository extends BaseRepository implements GroupUserRepositoryI
                 ->where('status', UserStatus::BLOCKED);
         })->with(['user', 'group'])->paginate($perPage);
     }
+
+    public function setShowPostType(User $user, Group $group, $type)
+    {
+        $groupUser = $this->getModel()::where('group_id', $group->id)
+            ->where('user_id', $user->id)
+            ->first();
+
+        $groupUser->show_post_type = $type;
+        $groupUser->save();
+
+        return $groupUser;
+    }
 }

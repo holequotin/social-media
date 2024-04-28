@@ -8,6 +8,7 @@ use App\Models\Group;
 use App\Models\User;
 use App\Repositories\BaseRepository;
 use App\Repositories\User\UserRepositoryInterface;
+use Carbon\Carbon;
 
 class GroupRepository extends BaseRepository implements GroupRepositoryInterface
 {
@@ -23,7 +24,7 @@ class GroupRepository extends BaseRepository implements GroupRepositoryInterface
     public function joinGroup(Group $group, User $user)
     {
         if (!$user->groups->contains($group)) {
-            $user->groups()->attach($group->id);
+            $user->groups()->attach($group->id, ['joined_at' => Carbon::now()]);
         }
     }
 
@@ -46,7 +47,7 @@ class GroupRepository extends BaseRepository implements GroupRepositoryInterface
     public function acceptUser(Group $group, User $user)
     {
         if ($this->userRepository->isWaitingAcceptGroup($group, $user)) {
-            $user->groups()->updateExistingPivot($group->id, ['status' => JoinGroupStatus::JOINED]);
+            $user->groups()->updateExistingPivot($group->id, ['status' => JoinGroupStatus::JOINED, 'joined_at' => Carbon::now()]);
         }
     }
 

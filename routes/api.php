@@ -129,6 +129,7 @@ Route::group(['middleware' => 'api'], function () {
             Route::post('/{group}/request', [GroupController::class, 'requestToJoinGroup'])->name('request');
             Route::delete('/{group}/remove/{user}', [GroupController::class, 'removeUserFromGroup'])->name('remove');
             Route::patch('/{group}/accept/{user}', [GroupController::class, 'acceptToJoinGroup'])->name('accept');
+            Route::patch('/{group}/show-type/{user}', [GroupUserController::class, 'setShowPostType'])->name('showType');
             Route::post('/{group}/leave', [GroupController::class, 'leaveGroup'])->name('leave');
             Route::patch('/{group}', [GroupController::class, 'update'])->name('update');
             Route::delete('/{group}', [GroupController::class, 'destroy'])->name('destroy');

@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Group;
+use App\Models\User;
 use App\Repositories\Group\GroupRepositoryInterface;
 use App\Repositories\GroupUser\GroupUserRepositoryInterface;
 use Exception;
@@ -27,5 +29,10 @@ class GroupUserService
         } catch (Exception $exception) {
             throw $exception;
         }
+    }
+
+    public function setShowPostType(User $user, Group $group, $type)
+    {
+        return $this->groupUserRepository->setShowPostType($user, $group, $type);
     }
 }

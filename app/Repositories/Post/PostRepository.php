@@ -3,7 +3,9 @@
 namespace App\Repositories\Post;
 
 use App\Enums\PostType;
+use App\Enums\ShowPostType;
 use App\Models\Group;
+use App\Models\GroupUser;
 use App\Models\Post;
 use App\Models\User;
 use App\Repositories\BaseRepository;
@@ -70,13 +72,30 @@ class PostRepository extends BaseRepository implements PostRepositoryInterface
 
     public function getPostsInGroup(Group $group, $perPage)
     {
-        return $group->posts()->with(['reactions', 'sharedPost'])->orderBy('created_at', 'desc')->paginate($perPage);
+        $groupUser = GroupUser::where('user_id', auth()->id())->where('group_id', $group->id)->first();
+        $query = $group->posts()->with(['reactions', 'sharedPost'])->orderBy('posts.created_at', 'desc');
+
+        if ($groupUser->show_post_type == ShowPostType::ALL) {
+            return $query->paginate();
+        }
+        return $query->where('created_at', '>', $groupUser->joined_at)->paginate();
     }
 
     public function getAllPostGroup(User $user)
     {
         $perPage = request()?->perPage ?? config('define.paginate.perPage');
-        $groupIds = $user->groups()->pluck('groups.id')->toArray();
-        return $this->getModel()::whereIn('group_id', $groupIds)->orderBy('posts.created_at', 'desc')->paginate($perPage);
+
+        $postIds = $user->groups()
+            ->join('posts', 'groups.id', '=', 'posts.group_id')
+            ->select('posts.*')
+            ->whereRaw('case
+            when group_user.show_post_type = "0"
+            then posts.created_at > group_user.joined_at
+            else 1 = 1
+            end')
+            ->orderBy('posts.created_at', 'desc')
+            ->pluck('posts.id');
+
+        return $this->getModel()::whereIn('id', $postIds)->orderBy('posts.created_at', 'desc')->paginate($perPage);
     }
 }
