@@ -12,6 +12,5 @@ interface PostRepositoryInterface extends RepositoryInterface
     public function getPostsByUser($user, $perPage);
     public function getSharedLevel(Post $post);
     public function getPostsInGroup(Group $group, $perPage);
-
     public function getAllPostGroup(User $user);
 }
