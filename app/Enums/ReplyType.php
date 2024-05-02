@@ -6,6 +6,6 @@ use BenSampo\Enum\Enum;
 
 final class ReplyType extends Enum
 {
-    const ACCEPT = "1";
-    const REFUSE = "0";
+    const ACCEPT = 1;
+    const REFUSE = 0;
 }

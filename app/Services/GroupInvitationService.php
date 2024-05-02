@@ -32,7 +32,7 @@ class GroupInvitationService
 
     public function replyGroupInvitation(GroupInvitation $groupInvitation, $type)
     {
-        if ($type == ReplyType::ACCEPT) {
+        if ($type === ReplyType::ACCEPT) {
             $groupUser = $this->groupUserRepository->getModel()::where('user_id', $groupInvitation->be_invite_id)->where('group_id', $groupInvitation->group_id)->first();
             if ($groupUser) {
                 $groupUser->status = JoinGroupStatus::JOINED;
