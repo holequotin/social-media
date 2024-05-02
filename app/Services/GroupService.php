@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\GroupRole;
 use App\Enums\GroupType;
 use App\Helpers\ImageHelper;
 use App\Models\Group;
@@ -37,7 +38,7 @@ class GroupService
             $group = $this->groupRepository->create($validated)->load(['owner']);
             $group->slug = $this->createGroupSlug($group->id, $group->name);
             $group->save();
-            auth()->user()->groups()->attach($group->id, ['joined_at' => Carbon::now()]);
+            auth()->user()->groups()->attach($group->id, ['joined_at' => Carbon::now(), 'role' => GroupRole::OWNER]);
             $group->load('owner');
             DB::commit();
             return $group;

@@ -2,6 +2,7 @@
 namespace App\Repositories\User;
 
 use App\Enums\FriendshipStatus;
+use App\Enums\GroupRole;
 use App\Enums\JoinGroupStatus;
 use App\Enums\UserStatus;
 use App\Models\Friendship;
@@ -25,11 +26,6 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
     public function getUserByName($name, $perPage)
     {
         return User::where('name', 'like', '%' . $name . '%')->where('id', '!=', auth()->id())->paginate($perPage);
-    }
-
-    public function getUsersInGroup(Group $group, $perPage)
-    {
-        return $group->members()->wherePivot('group_user.status', JoinGroupStatus::JOINED)->paginate($perPage);
     }
 
     public function isInGroup(Group $group, User $user)
@@ -129,5 +125,14 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
                         ->where('status', FriendshipStatus::ACCEPTED);
                 });
         })->paginate($perPage);
+    }
+
+    public function isAdmin(Group $group, User $user)
+    {
+        return $user->groups()
+            ->wherePivot('group_id', $group->id)
+            ->wherePivot('status', JoinGroupStatus::JOINED)
+            ->wherePivot('role', GroupRole::ADMIN)
+            ->exists();
     }
 }

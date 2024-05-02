@@ -21,6 +21,17 @@ class PostResource extends JsonResource
             'images' => PostImageResource::collection($this->whenLoaded('images')),
             'total_reaction' => $this->reactions()->paginate()->total(),
             'current_reaction' => ReactionResource::make($this->reactions()->where('user_id', auth()->id())->first()),
+            'permissions' => [
+                'delete' => $this->when(auth()->check(), function () {
+                    return auth()->user()->can('delete', $this->resource);
+                }),
+                'update' => $this->when(auth()->check(), function () {
+                    return auth()->user()->can('update', $this->resource);
+                }),
+                'share' => $this->when(auth()->check(), function () {
+                    return auth()->user()->can('share', $this->resource);
+                })
+            ],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'user' => UserResource::make($this->whenLoaded('user')),

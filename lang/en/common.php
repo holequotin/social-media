@@ -36,6 +36,7 @@ return [
         'request_success' => 'Requested to join group successfully',
         'remove_success' => 'Removed user successfully',
         'accept_success' => 'Accepted user successfully',
+        'set_role_success' => 'Set role successfully'
     ],
     'not_found' => ':model not found'
 ];

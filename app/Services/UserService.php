@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Helpers\ImageHelper;
-use App\Models\Group;
 use App\Models\User;
 use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
@@ -59,10 +58,5 @@ class UserService
     public function searchUserByName($name, $perPage = 15)
     {
         return $this->userRepository->getUserByName($name, $perPage);
-    }
-
-    public function getUsersInGroup(Group $group, $perPage = 15)
-    {
-        return $this->userRepository->getUsersInGroup($group, $perPage);
     }
 }

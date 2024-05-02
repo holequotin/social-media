@@ -35,4 +35,16 @@ class GroupUserService
     {
         return $this->groupUserRepository->setShowPostType($user, $group, $type);
     }
+
+    public function setGroupRole($groupId, $userId, $role)
+    {
+        return $this->groupUserRepository->getModel()::where('group_id', $groupId)
+            ->where('user_id', $userId)
+            ->update(['role' => $role]);
+    }
+
+    public function getMembers(Group $group)
+    {
+        return $this->groupUserRepository->getMembers($group);
+    }
 }
