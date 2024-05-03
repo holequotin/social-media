@@ -42,7 +42,7 @@ class GroupUserController extends BaseApiController
     {
         $validated = $request->validated();
         try {
-            $this->groupUserService->setGroupRole($group->id, $validated['user_id'], $validated['role']);
+            $this->groupUserService->setGroupRole($group->id, $validated);
 
             return $this->sendResponse(['message' => __('common.group.set_role_success')]);
         } catch (Exception $exception) {

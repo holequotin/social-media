@@ -59,11 +59,9 @@ class GroupUserRepository extends BaseRepository implements GroupUserRepositoryI
     {
         $perPage = request()?->perPage ?? config('define.paginate.perPage');
         return $this->getModel()::where('group_id', $group->id)
-            ->where('status', JoinGroupStatus::JOINED)
-            ->whereNotIn('user_id', function ($query) {
-                $query->select('id')->from('users')
-                    ->where('status', UserStatus::BLOCKED);
-            })
+            ->where('group_user.status', JoinGroupStatus::JOINED)
+            ->join('users', 'users.id', '=', 'group_user.user_id')
+            ->where('users.status', UserStatus::ACTIVE)
             ->paginate($perPage);
     }
 }
