@@ -19,4 +19,9 @@ class GroupChatPolicy
     {
         return $this->groupChatUserRepository->isAdmin($user->id, $groupChat->id);
     }
+
+    public function getMessages(User $user, GroupChat $groupChat)
+    {
+        return $this->groupChatUserRepository->isInGroupChat($user->id, $groupChat->id);
+    }
 }

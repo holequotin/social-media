@@ -186,6 +186,7 @@ Route::group(['middleware' => 'api'], function () {
             'prefix' => 'group-chat-message',
             'as' => 'group-chat-message.'
         ], function () {
+            Route::get('/{groupChat}', [GroupChatMessageController::class, 'index'])->name('index');
             Route::post('/', [GroupChatMessageController::class, 'store'])->name('store');
         });
     });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\GroupChatMessage\StoreGroupChatMessageRequest;
 use App\Http\Resources\GroupChatMessageResource;
+use App\Models\GroupChat;
 use App\Models\GroupChatMessage;
 use App\Services\GroupChatMessageService;
 use Illuminate\Http\Request;
@@ -18,9 +19,12 @@ class GroupChatMessageController extends BaseApiController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, GroupChat $groupChat)
     {
-        //
+        $this->authorize('getMessages', $groupChat);
+        $groupChatMessages = $this->groupChatMessageService->getMessagesByGroupChat($groupChat);
+
+        return $this->sendPaginateResponse(GroupChatMessageResource::collection($groupChatMessages));
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\GroupChat;
 use App\Repositories\GroupChatMessage\GroupChatMessageRepositoryInterface;
 
 class GroupChatMessageService
@@ -16,5 +17,10 @@ class GroupChatMessageService
         $message->load(['user', 'groupChat']);
 
         return $message;
+    }
+
+    public function getMessagesByGroupChat(GroupChat $groupChat)
+    {
+        return $this->groupChatMessageRepository->getMessageByGroupChat($groupChat);
     }
 }
