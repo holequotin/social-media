@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FriendshipController;
+use App\Http\Controllers\GroupChatController;
+use App\Http\Controllers\GroupChatUserController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\GroupInvitationController;
 use App\Http\Controllers\GroupUserController;
@@ -156,9 +158,27 @@ Route::group(['middleware' => 'api'], function () {
 
         Route::group([
             'prefix' => 'group-user',
-            'as' => 'group-user'
+            'as' => 'group-user.'
         ], function () {
             Route::patch('{group}/role', [GroupUserController::class, 'updateGroupRole'])->name('role');
+        });
+
+        Route::group([
+            'prefix' => 'group-chat',
+            'as' => 'group-chat.'
+        ], function () {
+            Route::post('/', [GroupChatController::class, 'store'])->name('store');
+            Route::patch('/{groupChat}', [GroupChatController::class, 'update'])->name('update');
+            Route::delete('/{groupChat}', [GroupChatController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::group([
+            'prefix' => 'group-chat-user',
+            'as' => 'group-chat-user.'
+        ], function () {
+            Route::post('/', [GroupChatUserController::class, 'store'])->name('store');
+            Route::patch('/{groupChatUser}', [GroupChatUserController::class, 'updateRole'])->name('updateRole');
+            Route::delete('/{groupChatUser}', [GroupChatUserController::class, 'destroy'])->name('destroy');
         });
     });
 });
