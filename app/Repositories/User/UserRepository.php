@@ -108,4 +108,26 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
             ->take($number)
             ->get();
     }
+
+    public function getUsersCanInvite(Group $group)
+    {
+        $perPage = request()?->perPage ?? config('define.paginate.perPage');
+
+        return $this->getModel()::whereNotIn('id', function ($query) use ($group) {
+            $query->selectRaw('distinct user_id')->from('group_user')
+                ->where('group_id', $group->id);
+        })->whereNotIn('id', function ($query) use ($group) {
+            $query->selectRaw('distinct be_invite_id')->from('group_invitations')
+                ->where('group_id', $group->id);
+        })->whereIn('id', function ($query) {
+            $query->selectRaw('from_user_id as id')->from('friendships')
+                ->where('to_user_id', auth()->id())
+                ->where('status', FriendshipStatus::ACCEPTED)
+                ->union(function ($query) {
+                    $query->selectRaw('to_user_id as id')->from('friendships')
+                        ->where('from_user_id', auth()->id())
+                        ->where('status', FriendshipStatus::ACCEPTED);
+                });
+        })->paginate($perPage);
+    }
 }

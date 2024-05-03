@@ -41,10 +41,15 @@ class GroupController extends BaseApiController
         return $this->sendResponse(GroupResource::make($group));
     }
 
-    public function show(Group $group)
+    public function show(Request $request)
     {
-        $group->load(['owner']);
-        return $this->sendResponse(GroupResource::make($group));
+        $group = $this->groupService->getGroupBySlug($request->slug);
+        if ($group) {
+            $group->load(['owner']);
+            return $this->sendResponse(GroupResource::make($group));
+        }
+
+        return $this->sendError(__('common.not_found', ['model' => 'Group']), Response::HTTP_NOT_FOUND);
     }
 
     public function destroy(Group $group)
@@ -68,7 +73,7 @@ class GroupController extends BaseApiController
             return $this->sendResponse(['message' => __('common.group.join_success')]);
         } catch (Exception $exception) {
             Log::error($exception->getMessage());
-            return $this->sendError(['error' => $exception->getMessage()], Response::HTTP_BAD_REQUEST);
+            return $this->sendError(['error' => $exception->getMessage()]);
         }
     }
 
@@ -97,10 +102,15 @@ class GroupController extends BaseApiController
 
     public function acceptToJoinGroup(Request $request, Group $group, User $user)
     {
-        $this->authorize('acceptUser', [$group, $user]);
-        $this->groupService->acceptUser($group, $user);
+        try {
+            $this->authorize('acceptUser', [$group, $user]);
+            $this->groupService->acceptUser($group, $user);
 
-        return $this->sendResponse(['message' => __('common.group.accept_success')]);
+            return $this->sendResponse(['message' => __('common.group.accept_success')]);
+        } catch (Exception $exception) {
+            Log::error($exception->getMessage());
+            return $this->sendError(['error' => $exception->getMessage()]);
+        }
     }
 
     public function removeUserFromGroup(Request $request, Group $group, User $user)

@@ -4,9 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
-class GroupResource extends JsonResource
+class GroupInvitationResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,11 +16,9 @@ class GroupResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'url' => Storage::url($this->url),
-            'owner' => UserResource::make($this->whenLoaded('owner')),
-            'type' => $this->type,
-            'slug' => $this->slug,
+            'inviter' => UserResource::make($this->whenLoaded('inviter')),
+            'be_invite' => UserResource::make($this->whenLoaded('beInvite')),
+            'group' => GroupResource::make($this->whenLoaded('group')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];

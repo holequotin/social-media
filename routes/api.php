@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FriendshipController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\GroupInvitationController;
 use App\Http\Controllers\GroupUserController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
@@ -120,7 +121,7 @@ Route::group(['middleware' => 'api'], function () {
             Route::get('/feed', [PostController::class, 'getAllPostGroup'])->name('feed');
             Route::get('/request', [GroupUserController::class, 'getRequestsToJoinGroup'])->name('getRequests');
             Route::get('/', [GroupController::class, 'search'])->name('search');
-            Route::get('/{group}', [GroupController::class, 'show'])->name('show');
+            Route::get('/{slug}', [GroupController::class, 'show'])->name('show');
             Route::get('/{group}/join-status', [GroupController::class, 'getJoinGroupStatus'])->name('status');
             Route::get('/{group}/posts', [PostController::class, 'getPostsInGroup'])->name('posts');
             Route::get('/{group}/users', [UserController::class, 'getUsersInGroup'])->name('users');
@@ -142,6 +143,15 @@ Route::group(['middleware' => 'api'], function () {
             Route::post('/', [MessageController::class, 'store'])->name('store');
             Route::get('/last-messages', [MessageController::class, 'getLastMessages']);
             Route::get('/{user}', [MessageController::class, 'index']);
+        });
+
+        Route::group([
+            'prefix' => 'invitations',
+            'as' => 'invitations.'
+        ], function () {
+            Route::get('{group}/can-invite', [GroupInvitationController::class, 'getUsersCanInvite'])->name('canInvite');
+            Route::post('/', [GroupInvitationController::class, 'store'])->name('store');
+            Route::patch('/{groupInvitation}/reply', [GroupInvitationController::class, 'replyInvitation'])->name('reply');
         });
     });
 });

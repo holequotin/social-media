@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\GroupType;
 use App\Enums\PostType;
 use App\Models\Post;
 use App\Models\User;
@@ -37,6 +38,7 @@ class PostPolicy
 
     public function share(User $user, Post $post)
     {
-        return $this->show($user, $post);
+        $isInPublicGroup = $isInPublicGroup = $post->group->type ?? null == GroupType::PUBLIC;
+        return $this->show($user, $post) || $isInPublicGroup;
     }
 }

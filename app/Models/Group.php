@@ -18,7 +18,8 @@ class Group extends Model
         'name',
         'owner_id',
         'url',
-        'type'
+        'type',
+        'slug'
     ];
 
     protected $attributes = [
