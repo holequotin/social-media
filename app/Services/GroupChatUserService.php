@@ -11,13 +11,21 @@ class GroupChatUserService
     {
     }
 
-    public function addUsersToGroupChat($userIds, $groupChatId, $role)
+    public function addUsersToGroupChat($validated, $role)
     {
-        $usersCollection = collect($userIds);
-        $data = $usersCollection->map(function ($user) use ($groupChatId, $role) {
-            return ['user_id' => $user, 'group_chat_id' => $groupChatId, 'role' => (integer)$role, 'joined_at' => Carbon::now()];
+        $usersCollection = collect($validated['users']);
+        $data = $usersCollection->map(function ($user) use ($validated, $role) {
+            return ['user_id' => $user, 'group_chat_id' => $validated['group_chat_id'], 'role' => (integer)$role, 'joined_at' => Carbon::now()];
         });
 
         return $this->groupChatUserRepository->getModel()::insert($data->all());
+    }
+
+    public function removeUser($userId, $groupChatId)
+    {
+        return $this->groupChatUserRepository->getModel()
+            ::where('user_id', $userId)
+            ->where('group_chat_id', $groupChatId)
+            ->delete();
     }
 }

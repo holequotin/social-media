@@ -2,11 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\GroupChatRole;
+use App\Http\Requests\GroupChatUser\StoreGroupChatUserRequest;
 use App\Models\GroupChatUser;
+use App\Services\GroupChatUserService;
 use Illuminate\Http\Request;
 
-class GroupChatUserController extends Controller
+class GroupChatUserController extends BaseApiController
 {
+    public function __construct(protected GroupChatUserService $groupChatUserService)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -26,9 +33,12 @@ class GroupChatUserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreGroupChatUserRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $this->groupChatUserService->addUsersToGroupChat($validated, GroupChatRole::MEMBER);
+
+        return $this->sendResponse(['message' => __('common.group_chat.add_success')]);
     }
 
     /**
@@ -60,6 +70,9 @@ class GroupChatUserController extends Controller
      */
     public function destroy(GroupChatUser $groupChatUser)
     {
-        //
+        $this->authorize('delete', $groupChatUser);
+        $groupChatUser->delete();
+
+        return $this->sendResponse(['message' => __('common.group_chat.remove_success')]);
     }
 }

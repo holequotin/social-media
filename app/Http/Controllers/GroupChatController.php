@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\GroupChat\StoreGroupChatRequest;
+use App\Http\Requests\GroupChat\UpdateGroupChatRequest;
 use App\Http\Resources\GroupChatResource;
 use App\Models\GroupChat;
 use App\Services\GroupChatService;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
@@ -67,9 +67,11 @@ class GroupChatController extends BaseApiController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, GroupChat $groupChat)
+    public function update(UpdateGroupChatRequest $request, GroupChat $groupChat)
     {
-        //
+        $groupChat = $this->groupChatService->updateGroupChat($groupChat->id, $request->validated());
+
+        return $this->sendResponse(GroupChatResource::make($groupChat));
     }
 
     /**

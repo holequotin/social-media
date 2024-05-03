@@ -38,5 +38,9 @@ return [
         'accept_success' => 'Accepted user successfully',
         'set_role_success' => 'Set role successfully'
     ],
+    'group_chat' => [
+        'add_success' => 'Add users to group chat successfully',
+        'remove_success' => 'Remove user successfully'
+    ],
     'not_found' => ':model not found'
 ];

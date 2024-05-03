@@ -23,15 +23,19 @@ class GroupChatService
             $groupChat = $this->groupChatRepository->create([
                 'name' => $validated['name']
             ]);
-            $this->groupChatUserService->addUsersToGroupChat([auth()->id()], $groupChat->id, GroupChatRole::ADMIN);
-            if (isset($validated['users'])) {
-                $this->groupChatUserService->addUsersToGroupChat($validated['users'], $groupChat->id, GroupChatRole::MEMBER);
-            }
+            $validated['group_chat_id'] = $groupChat->id;
+            $this->groupChatUserService->addUsersToGroupChat(['users' => [auth()->id()], 'group_chat_id' => $groupChat->id], GroupChatRole::ADMIN);
+            $this->groupChatUserService->addUsersToGroupChat($validated, GroupChatRole::MEMBER);
             DB::commit();
 
             return $groupChat;
         } catch (Exception $exception) {
             throw $exception;
         }
+    }
+
+    public function updateGroupChat($id, $validated)
+    {
+        return $this->groupChatRepository->update($id, $validated);
     }
 }
