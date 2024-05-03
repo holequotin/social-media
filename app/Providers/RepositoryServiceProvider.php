@@ -8,6 +8,10 @@ use App\Repositories\Friendship\FriendshipRepository;
 use App\Repositories\Friendship\FriendshipRepositoryInterface;
 use App\Repositories\Group\GroupRepository;
 use App\Repositories\Group\GroupRepositoryInterface;
+use App\Repositories\GroupChat\GroupChatRepository;
+use App\Repositories\GroupChat\GroupChatRepositoryInterface;
+use App\Repositories\GroupChatUser\GroupChatUserRepository;
+use App\Repositories\GroupChatUser\GroupChatUserRepositoryInterface;
 use App\Repositories\GroupInvitation\GroupInvitationRepository;
 use App\Repositories\GroupInvitation\GroupInvitationRepositoryInterface;
 use App\Repositories\GroupUser\GroupUserRepository;
@@ -45,6 +49,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(GroupUserRepositoryInterface::class, GroupUserRepository::class);
         $this->app->bind(MessageRepositoryInterface::class, MessageRepository::class);
         $this->app->bind(GroupInvitationRepositoryInterface::class, GroupInvitationRepository::class);
+        $this->app->bind(GroupChatRepositoryInterface::class, GroupChatRepository::class);
+        $this->app->bind(GroupChatUserRepositoryInterface::class, GroupChatUserRepository::class);
     }
 
     /**
