@@ -6,7 +6,6 @@ use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Http\Requests\Auth\UpdateProfileRequest;
 use App\Http\Requests\User\UploadAvatarRequest;
 use App\Http\Resources\UserResource;
-use App\Models\Group;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -46,14 +45,6 @@ class UserController extends BaseApiController
     public function search(Request $request)
     {
         $users = $this->userService->searchUserByName($request->name, $request->perPage);
-
-        return $this->sendPaginateResponse(UserResource::collection($users));
-    }
-
-    public function getUsersInGroup(Request $request, Group $group)
-    {
-        $this->authorize('getUsers', $group);
-        $users = $this->userService->getUsersInGroup($group, $request->perPage);
 
         return $this->sendPaginateResponse(UserResource::collection($users));
     }

@@ -19,6 +19,7 @@ class GroupUserResource extends JsonResource
             'group' => GroupResource::make($this->whenLoaded('group')),
             'user' => UserResource::make($this->whenLoaded('user')),
             'status' => $this->status,
+            'role' => $this->role,
             'show_post_type' => $this->show_post_type,
             'joined_at' => $this->joined_at,
             'created_at' => $this->created_at,

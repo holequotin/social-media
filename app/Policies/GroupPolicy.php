@@ -28,12 +28,16 @@ class GroupPolicy
 
     public function removeUser(User $user, Group $group, User $removedUser)
     {
-        return $user->is($group->owner) && $removedUser->groups->contains($group);
+        $isAdmin = $this->userRepository->isAdmin($group, $user);
+        return ($user->is($group->owner) || $isAdmin) && $removedUser->groups->contains($group);
     }
 
     public function acceptUser(User $user, Group $group, User $acceptedUser)
     {
-        return $user->is($group->owner) && $acceptedUser->groups()
+        $isAdmin = $this->userRepository->isAdmin($group, $user);
+        $isOwner = $user->is($group->owner);
+
+        return ($isAdmin || $isOwner) && $acceptedUser->groups()
                 ->wherePivot('group_id', $group->id)
                 ->wherePivot('status', JoinGroupStatus::WAITING)
                 ->exists();

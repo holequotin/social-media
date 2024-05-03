@@ -19,7 +19,8 @@ class Group extends Model
         'owner_id',
         'url',
         'type',
-        'slug'
+        'slug',
+        'role'
     ];
 
     protected $attributes = [
@@ -40,4 +41,6 @@ class Group extends Model
     {
         return $this->hasMany(Post::class, 'group_id', 'id');
     }
+
+    
 }

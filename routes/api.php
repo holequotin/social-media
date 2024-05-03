@@ -124,7 +124,7 @@ Route::group(['middleware' => 'api'], function () {
             Route::get('/{slug}', [GroupController::class, 'show'])->name('show');
             Route::get('/{group}/join-status', [GroupController::class, 'getJoinGroupStatus'])->name('status');
             Route::get('/{group}/posts', [PostController::class, 'getPostsInGroup'])->name('posts');
-            Route::get('/{group}/users', [UserController::class, 'getUsersInGroup'])->name('users');
+            Route::get('/{group}/users', [GroupUserController::class, 'getMembers'])->name('users');
             Route::post('/', [GroupController::class, 'store'])->name('store');
             Route::post('/{group}/join', [GroupController::class, 'joinGroup'])->name('join');
             Route::post('/{group}/request', [GroupController::class, 'requestToJoinGroup'])->name('request');
@@ -152,6 +152,13 @@ Route::group(['middleware' => 'api'], function () {
             Route::get('{group}/can-invite', [GroupInvitationController::class, 'getUsersCanInvite'])->name('canInvite');
             Route::post('/', [GroupInvitationController::class, 'store'])->name('store');
             Route::patch('/{groupInvitation}/reply', [GroupInvitationController::class, 'replyInvitation'])->name('reply');
+        });
+
+        Route::group([
+            'prefix' => 'group-user',
+            'as' => 'group-user'
+        ], function () {
+            Route::patch('{group}/role', [GroupUserController::class, 'updateGroupRole'])->name('role');
         });
     });
 });

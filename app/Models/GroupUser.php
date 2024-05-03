@@ -21,6 +21,8 @@ class GroupUser extends Model
         'joined_at'
     ];
 
+    protected $with = ['group', 'user'];
+
     public function scopeWaiting($query)
     {
         return $query->where('status', JoinGroupStatus::WAITING);

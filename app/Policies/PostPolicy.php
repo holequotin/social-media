@@ -6,13 +6,14 @@ use App\Enums\GroupType;
 use App\Enums\PostType;
 use App\Models\Post;
 use App\Models\User;
+use App\Repositories\User\UserRepositoryInterface;
 
 class PostPolicy
 {
     /**
      * Create a new policy instance.
      */
-    public function __construct()
+    public function __construct(protected UserRepositoryInterface $userRepository)
     {
         //
     }
@@ -24,7 +25,15 @@ class PostPolicy
 
     public function delete(User $user, Post $post)
     {
-        return $user->id == $post->user_id || $user->is($post->group->owner);
+        $isGroupOwner = false;
+        $isGroupAdmin = false;
+
+        if ($post->group) {
+            $isGroupOwner = $user->is($post->group->owner);
+            $isGroupAdmin = $this->userRepository->isAdmin($post->group, $user);
+        }
+
+        return $user->id == $post->user_id || $isGroupAdmin || $isGroupOwner;
     }
 
     public function show(User $user, Post $post)
@@ -38,7 +47,7 @@ class PostPolicy
 
     public function share(User $user, Post $post)
     {
-        $isInPublicGroup = $isInPublicGroup = $post->group->type ?? null == GroupType::PUBLIC;
+        $isInPublicGroup = $post?->group?->type == GroupType::PUBLIC;
         return $this->show($user, $post) || $isInPublicGroup;
     }
 }

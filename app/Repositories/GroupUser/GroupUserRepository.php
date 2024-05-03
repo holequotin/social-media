@@ -2,6 +2,8 @@
 
 namespace App\Repositories\GroupUser;
 
+use App\Enums\GroupRole;
+use App\Enums\JoinGroupStatus;
 use App\Enums\UserStatus;
 use App\Models\Group;
 use App\Models\GroupUser;
@@ -21,11 +23,18 @@ class GroupUserRepository extends BaseRepository implements GroupUserRepositoryI
         if ($group) {
             $query = $this->getModel()::waiting()->where('group_id', $group->id);
         } else {
-            $query = $this->getModel()::waiting()->whereIn('group_id', function ($query) use ($user) {
+            $query = $this->getModel()::whereIn('group_id', function ($query) use ($user) {
                 $query->select('id')
                     ->from('groups')
                     ->where('owner_id', $user->id);
-            });
+            })
+                ->orWhereIn('group_id', function ($query) use ($user) {
+                    $query->select('group_id')
+                        ->from('group_user')
+                        ->where('user_id', $user->id)
+                        ->where('role', GroupRole::ADMIN);
+                })
+                ->waiting();
         }
 
         return $query->whereNotIn('user_id', function ($query) {
@@ -44,5 +53,15 @@ class GroupUserRepository extends BaseRepository implements GroupUserRepositoryI
         $groupUser->save();
 
         return $groupUser;
+    }
+
+    public function getMembers(Group $group)
+    {
+        $perPage = request()?->perPage ?? config('define.paginate.perPage');
+        return $this->getModel()::where('group_id', $group->id)
+            ->where('group_user.status', JoinGroupStatus::JOINED)
+            ->join('users', 'users.id', '=', 'group_user.user_id')
+            ->where('users.status', UserStatus::ACTIVE)
+            ->paginate($perPage);
     }
 }
