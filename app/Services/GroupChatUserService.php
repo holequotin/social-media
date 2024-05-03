@@ -21,11 +21,8 @@ class GroupChatUserService
         return $this->groupChatUserRepository->getModel()::insert($data->all());
     }
 
-    public function removeUser($userId, $groupChatId)
+    public function updateRole($groupChatUser, $validated)
     {
-        return $this->groupChatUserRepository->getModel()
-            ::where('user_id', $userId)
-            ->where('group_chat_id', $groupChatId)
-            ->delete();
+        return $this->groupChatUserRepository->update($groupChatUser->id, $validated);
     }
 }

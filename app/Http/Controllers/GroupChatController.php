@@ -79,6 +79,9 @@ class GroupChatController extends BaseApiController
      */
     public function destroy(GroupChat $groupChat)
     {
-        //
+        $this->authorize('delete', $groupChat);
+        $groupChat->delete();
+
+        return $this->sendResponse(['message' => __('common.group_chat.delete_success')],);
     }
 }

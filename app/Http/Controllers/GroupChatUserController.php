@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Enums\GroupChatRole;
 use App\Http\Requests\GroupChatUser\StoreGroupChatUserRequest;
+use App\Http\Requests\GroupChatUser\UpdateGroupChatRoleRequest;
 use App\Models\GroupChatUser;
 use App\Services\GroupChatUserService;
-use Illuminate\Http\Request;
 
 class GroupChatUserController extends BaseApiController
 {
@@ -60,9 +60,11 @@ class GroupChatUserController extends BaseApiController
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, GroupChatUser $groupChatUser)
+    public function updateRole(UpdateGroupChatRoleRequest $request, GroupChatUser $groupChatUser)
     {
-        //
+        $this->groupChatUserService->updateRole($groupChatUser, $request->validated());
+
+        return $this->sendResponse(['message' => __('common.group_chat.update_role_success')]);
     }
 
     /**

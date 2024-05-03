@@ -40,7 +40,9 @@ return [
     ],
     'group_chat' => [
         'add_success' => 'Add users to group chat successfully',
-        'remove_success' => 'Remove user successfully'
+        'remove_success' => 'Remove user successfully',
+        'delete_success' => 'Deleted group chat successfully',
+        'update_role_success' => 'Update role successfully'
     ],
     'not_found' => ':model not found'
 ];
