@@ -21,4 +21,11 @@ class GroupChatUserRepository extends BaseRepository implements GroupChatUserRep
             ->where('role', GroupChatRole::ADMIN)
             ->exists();
     }
+
+    public function isInGroupChat($userId, $groupChatId)
+    {
+        return $this->getModel()::where('user_id', $userId)
+            ->where('group_chat_id', $groupChatId)
+            ->exists();
+    }
 }

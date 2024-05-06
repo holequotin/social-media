@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FriendshipController;
 use App\Http\Controllers\GroupChatController;
+use App\Http\Controllers\GroupChatMessageController;
 use App\Http\Controllers\GroupChatUserController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\GroupInvitationController;
@@ -179,6 +180,14 @@ Route::group(['middleware' => 'api'], function () {
             Route::post('/', [GroupChatUserController::class, 'store'])->name('store');
             Route::patch('/{groupChatUser}', [GroupChatUserController::class, 'updateRole'])->name('updateRole');
             Route::delete('/{groupChatUser}', [GroupChatUserController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::group([
+            'prefix' => 'group-chat-message',
+            'as' => 'group-chat-message.'
+        ], function () {
+            Route::get('/{groupChat}', [GroupChatMessageController::class, 'index'])->name('index');
+            Route::post('/', [GroupChatMessageController::class, 'store'])->name('store');
         });
     });
 });
