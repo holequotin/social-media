@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\GroupInvitationCreated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,6 +18,10 @@ class GroupInvitation extends Model
     ];
 
     protected $with = ['inviter', 'beInvite', 'group'];
+
+    protected $dispatchesEvents = [
+        'created' => GroupInvitationCreated::class,
+    ];
 
     public function inviter(): BelongsTo
     {
