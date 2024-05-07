@@ -14,7 +14,11 @@ class UpdateShowPostTypeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->group->owner->is(auth()->user()) && $this->group->members()->wherePivot('status', JoinGroupStatus::JOINED)->wherePivot('user_id', $this->user->id)->exists();
+        $isOwner = $this->group->owner->is(auth()->user());
+        $isAdmin = $this->group->admins->contains(auth()->user());
+        $isJoined = $this->group->members()->wherePivot('status', JoinGroupStatus::JOINED)->wherePivot('user_id', $this->user->id)->exists();
+
+        return ($isAdmin || $isOwner) && $isJoined;
     }
 
     /**

@@ -26,4 +26,11 @@ class GroupInvitationRepository extends BaseRepository implements GroupInvitatio
             ->where('group_id', $groupId)
             ->delete();
     }
+
+    public function getInvitationsByUser($userId)
+    {
+        $perPage = request()?->perPage ?? config('define.paginate.perPage');
+        return $this->getModel()::where('be_invite_id', $userId)
+            ->paginate($perPage);
+    }
 }

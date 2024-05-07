@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\GroupRole;
 use App\Enums\GroupType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +14,7 @@ class Group extends Model
 {
     use HasFactory;
 
-    protected $with = ['owner'];
+    protected $with = ['owner', 'admins'];
     protected $fillable = [
         'name',
         'owner_id',
@@ -37,10 +38,15 @@ class Group extends Model
         return $this->belongsToMany(User::class, 'group_user', 'group_id', 'user_id')->withPivot('status');
     }
 
+    public function admins(): BelongsToMany
+    {
+        return $this->members()->wherePivot('role', GroupRole::ADMIN);
+    }
+
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class, 'group_id', 'id');
     }
 
-    
+
 }

@@ -6,6 +6,7 @@ use App\Enums\JoinGroupStatus;
 use App\Enums\ReplyType;
 use App\Models\Group;
 use App\Models\GroupInvitation;
+use App\Models\User;
 use App\Repositories\GroupInvitation\GroupInvitationRepositoryInterface;
 use App\Repositories\GroupUser\GroupUserRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
@@ -32,7 +33,7 @@ class GroupInvitationService
 
     public function replyGroupInvitation(GroupInvitation $groupInvitation, $type)
     {
-        if ($type === ReplyType::ACCEPT) {
+        if ((int)$type === ReplyType::ACCEPT) {
             $groupUser = $this->groupUserRepository->getModel()::where('user_id', $groupInvitation->be_invite_id)->where('group_id', $groupInvitation->group_id)->first();
             if ($groupUser) {
                 $groupUser->status = JoinGroupStatus::JOINED;
@@ -54,5 +55,10 @@ class GroupInvitationService
     public function getUsersCanInvite(Group $group)
     {
         return $this->userRepository->getUsersCanInvite($group);
+    }
+
+    public function getGroupInvitations(User $user)
+    {
+        return $this->groupInvitationRepository->getInvitationsByUser($user->id);
     }
 }

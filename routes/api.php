@@ -152,6 +152,7 @@ Route::group(['middleware' => 'api'], function () {
             'prefix' => 'invitations',
             'as' => 'invitations.'
         ], function () {
+            Route::get('/', [GroupInvitationController::class, 'index'])->name('index');
             Route::get('{group}/can-invite', [GroupInvitationController::class, 'getUsersCanInvite'])->name('canInvite');
             Route::post('/', [GroupInvitationController::class, 'store'])->name('store');
             Route::patch('/{groupInvitation}/reply', [GroupInvitationController::class, 'replyInvitation'])->name('reply');
