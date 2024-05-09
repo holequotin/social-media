@@ -23,9 +23,11 @@ class GroupInvitationController extends BaseApiController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $invitations = $this->groupInvitationService->getGroupInvitations(auth()->user());
+
+        return $this->sendPaginateResponse(GroupInvitationResource::collection($invitations));
     }
 
     /**

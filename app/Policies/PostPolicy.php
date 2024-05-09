@@ -48,6 +48,7 @@ class PostPolicy
     public function share(User $user, Post $post)
     {
         $isInPublicGroup = $post?->group?->type == GroupType::PUBLIC;
-        return $this->show($user, $post) || $isInPublicGroup;
+        $isNotInGroup = $post->group === null;
+        return $isNotInGroup || $isInPublicGroup;
     }
 }

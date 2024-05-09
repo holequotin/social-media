@@ -13,6 +13,5 @@ interface GroupRepositoryInterface extends RepositoryInterface
     public function requestToJoinGroup(Group $group, User $user);
     public function getGroupsByName($name, $perPage = 15);
     public function getJoinGroupStatus(Group $group, User $user);
-
     public function getGroupBySlug(string $slug);
 }
