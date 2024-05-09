@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Enums\GroupChatRole;
+use App\Models\GroupChat;
+use App\Models\User;
 use App\Repositories\GroupChat\GroupChatRepositoryInterface;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -37,5 +39,15 @@ class GroupChatService
     public function updateGroupChat($id, $validated)
     {
         return $this->groupChatRepository->update($id, $validated);
+    }
+
+    public function getGroupChatsByUser(User $user)
+    {
+        return $this->groupChatRepository->getGroupChatsByUser($user->id);
+    }
+
+    public function getUsersCanAdd(GroupChat $groupChat)
+    {
+        return $this->groupChatRepository->getUsersCanAdd($groupChat->id);
     }
 }

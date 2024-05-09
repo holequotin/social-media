@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\GroupChat\StoreGroupChatRequest;
 use App\Http\Requests\GroupChat\UpdateGroupChatRequest;
 use App\Http\Resources\GroupChatResource;
+use App\Http\Resources\UserResource;
 use App\Models\GroupChat;
 use App\Services\GroupChatService;
 use Exception;
@@ -22,7 +23,9 @@ class GroupChatController extends BaseApiController
      */
     public function index()
     {
-        //
+        $groupChats = $this->groupChatService->getGroupChatsByUser(auth()->user());
+
+        return $this->sendPaginateResponse(GroupChatResource::collection($groupChats));
     }
 
     /**
@@ -53,7 +56,9 @@ class GroupChatController extends BaseApiController
      */
     public function show(GroupChat $groupChat)
     {
-        //
+        $this->authorize('view', $groupChat);
+
+        return $this->sendResponse(GroupChatResource::make($groupChat));
     }
 
     /**
@@ -83,5 +88,12 @@ class GroupChatController extends BaseApiController
         $groupChat->delete();
 
         return $this->sendResponse(['message' => __('common.group_chat.delete_success')],);
+    }
+
+    public function getUserCanAdd(GroupChat $groupChat)
+    {
+        $users = $this->groupChatService->getUsersCanAdd($groupChat);
+
+        return $this->sendPaginateResponse(UserResource::collection($users));
     }
 }

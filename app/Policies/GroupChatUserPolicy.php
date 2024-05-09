@@ -20,4 +20,9 @@ class GroupChatUserPolicy
     {
         return $user->id === $groupChatUser->user_id || $this->groupChatUserRepository->isAdmin($user->id, $groupChatUser->group_chat_id);
     }
+
+    public function update(User $user, GroupChatUser $groupChatUser)
+    {
+        return $this->groupChatUserRepository->isAdmin($user->id, $groupChatUser->group_chat_id);
+    }
 }

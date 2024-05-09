@@ -169,6 +169,9 @@ Route::group(['middleware' => 'api'], function () {
             'prefix' => 'group-chat',
             'as' => 'group-chat.'
         ], function () {
+            Route::get('/{groupChat}/can-add', [GroupChatController::class, 'getUserCanAdd'])->name('usersCanAdd');
+            Route::get('/', [GroupChatController::class, 'index'])->name('index');
+            Route::get('/{groupChat}', [GroupChatController::class, 'show'])->name('show');
             Route::post('/', [GroupChatController::class, 'store'])->name('store');
             Route::patch('/{groupChat}', [GroupChatController::class, 'update'])->name('update');
             Route::delete('/{groupChat}', [GroupChatController::class, 'destroy'])->name('destroy');
@@ -178,6 +181,7 @@ Route::group(['middleware' => 'api'], function () {
             'prefix' => 'group-chat-user',
             'as' => 'group-chat-user.'
         ], function () {
+            Route::get('/users/{groupChat}', [GroupChatUserController::class, 'index'])->name('index');
             Route::post('/', [GroupChatUserController::class, 'store'])->name('store');
             Route::patch('/{groupChatUser}', [GroupChatUserController::class, 'updateRole'])->name('updateRole');
             Route::delete('/{groupChatUser}', [GroupChatUserController::class, 'destroy'])->name('destroy');

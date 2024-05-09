@@ -24,4 +24,9 @@ class GroupChatPolicy
     {
         return $this->groupChatUserRepository->isInGroupChat($user->id, $groupChat->id);
     }
+
+    public function view(User $user, GroupChat $groupChat)
+    {
+        return $this->groupChatUserRepository->isInGroupChat($user->id, $groupChat->id);
+    }
 }
