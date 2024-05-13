@@ -35,4 +35,19 @@ class GroupChatUserRepository extends BaseRepository implements GroupChatUserRep
         return $this->getModel()::where('group_chat_id', $groupChatId)
             ->paginate($perPage);
     }
+
+    public function remove($userId, $groupChatId)
+    {
+        return $this->getModel()::where('user_id', $userId)
+            ->where('group_chat_id', $groupChatId)
+            ->delete();
+    }
+
+    public function hasAnotherAdmin($userId, $groupChatId)
+    {
+        return $this->getModel()::whereNot('user_id', $userId)
+            ->where('group_chat_id', $groupChatId)
+            ->where('role', GroupChatRole::ADMIN)
+            ->exists();
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\GroupChat;
+use App\Models\User;
 use App\Repositories\GroupChatUser\GroupChatUserRepositoryInterface;
 use Carbon\Carbon;
 
@@ -30,5 +31,10 @@ class GroupChatUserService
     public function getByGroupChat(GroupChat $groupChat)
     {
         return $this->groupChatUserRepository->getByGroupChat($groupChat->id);
+    }
+
+    public function leave(User $user, GroupChat $groupChat)
+    {
+        return $this->groupChatUserRepository->remove($user->id, $groupChat->id);
     }
 }

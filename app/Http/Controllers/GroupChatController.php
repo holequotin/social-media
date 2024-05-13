@@ -8,13 +8,17 @@ use App\Http\Resources\GroupChatResource;
 use App\Http\Resources\UserResource;
 use App\Models\GroupChat;
 use App\Services\GroupChatService;
+use App\Services\GroupChatUserService;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class GroupChatController extends BaseApiController
 {
-    public function __construct(protected GroupChatService $groupChatService)
+    public function __construct(
+        protected GroupChatService     $groupChatService,
+        protected GroupChatUserService $groupChatUserService
+    )
     {
     }
 
@@ -95,5 +99,13 @@ class GroupChatController extends BaseApiController
         $users = $this->groupChatService->getUsersCanAdd($groupChat);
 
         return $this->sendPaginateResponse(UserResource::collection($users));
+    }
+
+    public function leave(GroupChat $groupChat)
+    {
+        $this->authorize('leave', $groupChat);
+        $this->groupChatUserService->leave(auth()->user(), $groupChat);
+
+        return $this->sendResponse(['message' => __('common.group_chat.leave_success')]);
     }
 }

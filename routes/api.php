@@ -175,6 +175,7 @@ Route::group(['middleware' => 'api'], function () {
             Route::post('/', [GroupChatController::class, 'store'])->name('store');
             Route::patch('/{groupChat}', [GroupChatController::class, 'update'])->name('update');
             Route::delete('/{groupChat}', [GroupChatController::class, 'destroy'])->name('destroy');
+            Route::delete('/{groupChat}/leave', [GroupChatController::class, 'leave'])->name('leave');
         });
 
         Route::group([

@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\GroupChat;
 use App\Models\User;
 use App\Repositories\GroupChatUser\GroupChatUserRepositoryInterface;
+use Illuminate\Auth\Access\Response;
 
 class GroupChatPolicy
 {
@@ -28,5 +29,19 @@ class GroupChatPolicy
     public function view(User $user, GroupChat $groupChat)
     {
         return $this->groupChatUserRepository->isInGroupChat($user->id, $groupChat->id);
+    }
+
+    public function leave(User $user, GroupChat $groupChat)
+    {
+        if (!$this->groupChatUserRepository->isInGroupChat($user->id, $groupChat->id)) {
+            return Response::deny(__('common.group_chat.not_in'));
+        }
+
+        if (!$this->groupChatUserRepository->hasAnotherAdmin($user->id, $groupChat->id)) {
+            return Response::deny(__('common.group_chat.not_has_admin'));
+        }
+
+        return true;
+
     }
 }

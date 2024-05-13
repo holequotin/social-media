@@ -42,7 +42,10 @@ return [
         'add_success' => 'Add users to group chat successfully',
         'remove_success' => 'Remove user successfully',
         'delete_success' => 'Deleted group chat successfully',
-        'update_role_success' => 'Update role successfully'
+        'update_role_success' => 'Update role successfully',
+        'leave_success' => 'Leave group chat successfully',
+        'not_in' => 'User is not in group chat',
+        'not_has_admin' => 'Group chat must have at least 1 admin'
     ],
     'not_found' => ':model not found'
 ];
