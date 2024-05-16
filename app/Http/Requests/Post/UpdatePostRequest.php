@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Post;
 
+use App\Enums\PostType;
 use App\Repositories\PostImage\PostImageRepositoryInterface;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
@@ -29,7 +31,7 @@ class UpdatePostRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -37,6 +39,7 @@ class UpdatePostRequest extends FormRequest
         $this->mergeIfMissing(['delete_image_id' => []]);
         return [
             'body' => ['string', 'nullable'],
+            'type' => ['string', 'in:' . implode(',', PostType::getValues())],
             'images' => ['max:4'],
             'images.*' => ['image', 'max:2048'],
             'delete_image_id' => ['array', 'max:4'],
@@ -58,7 +61,7 @@ class UpdatePostRequest extends FormRequest
                         __('common.post.images.max', ['max' => config('define.post.images.max_count')])
                     );
                 }
-                
+
                 //check if Post have PostImage
                 $post = $this->route('post');
                 if(!$this->postImageRepository->checkValidPostImage($post->id,$validated['delete_image_id'])){

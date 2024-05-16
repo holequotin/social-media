@@ -28,4 +28,26 @@ class GroupChatUserRepository extends BaseRepository implements GroupChatUserRep
             ->where('group_chat_id', $groupChatId)
             ->exists();
     }
+
+    public function getByGroupChat($groupChatId)
+    {
+        $perPage = request()?->perPage ?? config('define.paginate.perPage');
+        return $this->getModel()::where('group_chat_id', $groupChatId)
+            ->paginate($perPage);
+    }
+
+    public function remove($userId, $groupChatId)
+    {
+        return $this->getModel()::where('user_id', $userId)
+            ->where('group_chat_id', $groupChatId)
+            ->delete();
+    }
+
+    public function hasAnotherAdmin($userId, $groupChatId)
+    {
+        return $this->getModel()::whereNot('user_id', $userId)
+            ->where('group_chat_id', $groupChatId)
+            ->where('role', GroupChatRole::ADMIN)
+            ->exists();
+    }
 }
